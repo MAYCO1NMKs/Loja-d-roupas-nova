@@ -1,0 +1,21 @@
+{% extends "usuario/base.html" %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="max-w-xl mx-auto mt-8 p-6 bg-branco arredondado-lg sombra-md">
+    <h2 class="text-2xl font-bold mb-6 text-center">Editar Perfil</h2>
+
+    <form method="post" enctype="multipart/form-data" class="space-y-4">
+        {% csrf_token %}
+
+        <!-- Campo de fotos -->
+        {{ form.foto|add_class:"w-full rounded px-3 py-2" }}
+
+        <!-- Outros campos -->
+        {{ form.nome|add_class:"w-full rounded px-3 py-2" }}
+        {{ form.email|add_class:"w-full rounded px-3 py-2" }}
+
+        <button type="submit" class="bg-azul text-branco px-4 py-2 rounded">Salvar</button>
+    </form>
+</div>
+{% endblock %}

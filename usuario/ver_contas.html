@@ -1,0 +1,21 @@
+{% extends "usuario/base.html" %}
+
+{% block content %}
+<h1>Ver Contas</h1>
+<p>Aqui você pode ver todos os usuários do sistema.</p>
+
+<table border="1">
+    <tr>
+        <th>Usuário</th>
+        <th>Email</th>
+    </tr>
+    {% for u in usuarios %}
+    <tr>
+        <td>{{ u.user.username }}</td>
+        <td>{{ u.user.email }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<a href="{% url 'dashboard' %}">Voltar ao Dashboard</a>
+{% endblock %}
