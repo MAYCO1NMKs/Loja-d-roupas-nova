@@ -1,0 +1,50 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Minha Loja{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+  <header class="main-header">
+    <div class="container">
+      <a class="navbar-brand" href="{% url 'home' %}">Minha Loja</a>
+      <nav class="main-nav">
+        <ul>
+          <li><a href="{% url 'home' %}">Home</a></li>
+          <li><a href="{% url 'produtos:lista_produtos' %}">Produtos</a></li>
+          <li><a href="{% url 'carrinho:ver_carrinho' %}">Carrinho</a></li>
+          {% if user.is_authenticated %}
+            <li><a href="{% url 'usuario:profile' %}">Minha Conta</a></li>
+            <li><a href="{% url 'usuario:logout' %}">Sair</a></li>
+          {% else %}
+            <li><a href="{% url 'usuario:login' %}">Login</a></li>
+            <li><a href="{% url 'usuario:register' %}">Cadastre-se</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Bloco para conteúdo que ocupa a LARGURA TOTAL da tela -->
+  {% block content_full_width %}
+  {% endblock %}
+
+  <!-- Bloco para conteúdo que fica DENTRO do container centralizado -->
+  <main class="container">
+    {% block content %}
+    {% endblock %}
+  </main>
+
+  <footer class="main-footer">
+    <div class="container">
+      <p>&copy; {% now "Y" %} Minha Loja. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+</body>
+</html>

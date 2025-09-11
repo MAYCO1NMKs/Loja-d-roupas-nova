@@ -1,15 +1,22 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser, Profile
+from .models import Carrinho, ItemCarrinho
 
-class CustomUserAdmin(UserAdmin):
-    model = CustomUser
-    fieldsets = UserAdmin.fieldsets + (
-        (None, {'fields': ('telefone', 'endereco')}),
-    )
-    add_fieldsets = UserAdmin.add_fieldsets + (
-        (None, {'fields': ('telefone', 'endereco')}),
-    )
+class ItemCarrinhoInline(admin.TabularInline):
+    """
+    Permite a visualização e edição dos itens de um carrinho
+    diretamente na página de administração do Carrinho.
+    """
+    model = ItemCarrinho
+    extra = 0 # Não exibe campos vazios por padrão
 
-admin.site.register(CustomUser, CustomUserAdmin)
-admin.site.register(Profile)
+@admin.register(Carrinho)
+class CarrinhoAdmin(admin.ModelAdmin):
+    """
+    Configura a exibição do modelo Carrinho no painel de administração.
+    """
+    list_display = ('usuario', 'data_criacao')
+    search_fields = ('usuario__username',)
+    inlines = [ItemCarrinhoInline]
+    
+# Não é necessário registrar o ItemCarrinho separadamente,
+# pois ele já é gerenciado pelo CarrinhoAdmin com o inline.

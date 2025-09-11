@@ -1,0 +1,34 @@
+
+{% extends "base.html" %}
+
+{% block title %}Cadastre-se - Minha Loja{% endblock %}
+
+{% block content %}
+<div class="form-container">
+  <h2 class="form-title">Crie sua Conta</h2>
+  
+  <form method="post" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+
+    <!-- Loop manual para aplicar a classe .form-control em cada campo -->
+    {% for field in form %}
+      <div class="form-group">
+        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+        {{ field }}
+        {% if field.help_text %}
+          <small style="color: var(--secondary-color); display: block; margin-top: 5px;">{{ field.help_text|safe }}</small>
+        {% endif %}
+        {% for error in field.errors %}
+          <p style="color: #dc3545; font-size: 0.875em; margin-top: 5px;">{{ error }}</p>
+        {% endfor %}
+      </div>
+    {% endfor %}
+    
+    <button type="submit" class="btn-primary">Cadastrar</button>
+  </form>
+  
+  <div class="form-footer-text">
+    <p>Já tem uma conta? <a href="{% url 'usuario:login' %}">Faça login</a></p>
+  </div>
+</div>
+{% endblock %}

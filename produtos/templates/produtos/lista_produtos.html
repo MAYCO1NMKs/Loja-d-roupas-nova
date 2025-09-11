@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Nossos Produtos - Minha Loja{% endblock %}
+
+{% block content %}
+
+<!-- Cabeçalho da Página -->
+<div class="page-header">
+  <h1>Nossos Produtos</h1>
+  <p>Confira as últimas tendências e novidades.</p>
+</div>
+
+<!-- Grade de Produtos -->
+<div class="product-grid">
+  {% for produto in produtos %}
+  <div class="product-card">
+    
+    <!-- Imagem do Produto -->
+    {% if produto.imagem %}
+      <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" class="product-image">
+    {% else %}
+      <img src="https://via.placeholder.com/300x250?text=Sem+Imagem" alt="Imagem Padrão" class="product-image">
+    {% endif %}
+    
+    <!-- Informações do Produto -->
+    <div class="product-info">
+      <h3 class="product-title">{{ produto.nome }}</h3>
+      <p class="product-description">{{ produto.descricao|truncatewords:15 }}</p>
+      <div class="product-price">R$ {{ produto.preco|floatformat:2 }}</div>
+      <a href="{% url 'carrinho:adicionar_ao_carrinho' produto.id %}" class="btn-primary">Adicionar ao Carrinho</a>
+    </div>
+
+  </div>
+  {% empty %}
+  <div class="col-12" style="grid-column: 1 / -1; text-align: center;">
+    <div class="alert alert-warning" role="alert">
+      Nenhum produto cadastrado no momento.
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

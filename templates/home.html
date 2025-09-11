@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Sua Loja de Moda Masculina{% endblock %}
+
+{# Bloco para a seção hero de largura total #}
+{% block content_full_width %}
+  <div class="hero-section">
+    <div class="hero-content">
+      <h1>Sua Moda, Seu Estilo</h1>
+      <p>As melhores peças para você se destacar em qualquer ocasião.</p>
+      <a href="{% url 'produtos:lista_produtos' %}" class="btn-primary">Ver Coleção Completa</a>
+    </div>
+  </div>
+{% endblock %}
+
+
+{# Bloco para a seção de destaques, que fica dentro do .container #}
+{% block content %}
+  <div class="features-section">
+    <div class="feature-item">
+      <h3>Qualidade Premium</h3>
+      <p>Materiais selecionados para garantir o máximo de conforto e durabilidade.</p>
+    </div>
+    
+    <div class="feature-item">
+      <h3>Últimas Tendências</h3>
+      <p>Nossa coleção é constantemente atualizada com as novidades da moda.</p>
+    </div>
+    
+    <div class="feature-item">
+      <h3>Entrega Rápida</h3>
+      <p>Receba seus produtos no conforto da sua casa com agilidade e segurança.</p>
+    </div>
+  </div>
+{% endblock %}
