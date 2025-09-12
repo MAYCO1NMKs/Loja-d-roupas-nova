@@ -1,34 +1,48 @@
 from django.db import models
-from django.conf import settings
 from produtos.models import Produto
 
 class Carrinho(models.Model):
     """
-    Modelo para o carrinho de compras.
-    Cada usuário terá um carrinho associado.
+    Representa o carrinho de compras, associado a uma sessão de usuário.
     """
-    # A Foreign Key para o modelo de usuário personalizado
-    usuario = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='carrinho')
-    
-    # Campo para armazenar a data de criação do carrinho
-    data_criacao = models.DateTimeField(auto_now_add=True)
-    
+    id_sessao = models.CharField(max_length=40, db_index=True)
+    criado_em = models.DateTimeField(auto_now_add=True)
+    atualizado_em = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Carrinho"
+        verbose_name_plural = "Carrinhos"
+        ordering = ('-criado_em',)
+
     def __str__(self):
-        return f"Carrinho de {self.usuario.username}"
+        return self.id_sessao
+    
+    @property
+    def get_total_carrinho(self):
+        """Calcula o valor total de todos os itens no carrinho."""
+        return sum(item.get_subtotal for item in self.itens.all())
+
 
 class ItemCarrinho(models.Model):
     """
-    Modelo para os itens dentro do carrinho.
-    Cada item está associado a um produto e a um carrinho.
+    Representa um item específico (um produto e sua quantidade) dentro do carrinho.
     """
-    # Foreign Key para o carrinho ao qual o item pertence
-    carrinho = models.ForeignKey(Carrinho, on_delete=models.CASCADE, related_name='itens')
-    
-    # Foreign Key para o produto que o item representa
+    carrinho = models.ForeignKey(
+        Carrinho, 
+        related_name='itens', 
+        on_delete=models.CASCADE
+    )
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
-    
-    # Quantidade do produto no carrinho
     quantidade = models.PositiveIntegerField(default=1)
-    
+
+    class Meta:
+        verbose_name = "Item do Carrinho"
+        verbose_name_plural = "Itens do Carrinho"
+
     def __str__(self):
-        return f"{self.quantidade}x {self.produto.nome} no carrinho de {self.carrinho.usuario.username}"
+        return f'{self.quantidade} x {self.produto.nome}'
+    
+    @property
+    def get_subtotal(self):
+        """Calcula o subtotal para este item (preço do produto * quantidade)."""
+        return self.produto.preco * self.quantidade

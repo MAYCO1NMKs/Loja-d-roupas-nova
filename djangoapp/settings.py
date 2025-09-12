@@ -116,6 +116,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']
+
+# Media files (uploads)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -124,8 +129,18 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Custom user model
 AUTH_USER_MODEL = 'usuario.User'
 
-# Required for dj-rest-auth
-SITE_ID = 1
+# --- AUTHENTICATION SETTINGS ---
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend', # Needed to login by username in Django admin, regardless of `allauth`
+    'allauth.account.auth_backends.AuthenticationBackend', # `allauth` specific authentication methods, such as login by e-mail
+)
+
+LOGIN_URL = '/accounts/login/' # Explicitly set the login URL
+LOGIN_REDIRECT_URL = '/usuario/profile/'
+LOGOUT_REDIRECT_URL = '/'
+SITE_ID = 1 # Required for dj-rest-auth and allauth
+
+ACCOUNT_ADAPTER = 'usuario.adapters.MyAccountAdapter'
 
 # REST Framework configuration for JWT authentication
 REST_FRAMEWORK = {

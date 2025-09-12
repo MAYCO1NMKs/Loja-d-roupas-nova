@@ -1,0 +1,54 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Seu Carrinho de Compras{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Seu Carrinho de Compras</h1>
+
+    {% if not itens_carrinho %}
+        <div class="alert alert-info" role="alert">
+            Seu carrinho está vazio.
+        </div>
+        <a href="{% url 'produtos:lista_produtos' %}" class="btn btn-primary">Ver Produtos</a>
+    {% else %}
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Preço</th>
+                    <th>Quantidade</th>
+                    <th>Subtotal</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in itens_carrinho %}
+                    <tr>
+                        <td>{{ item.produto.nome }}</td>
+                        <td>R$ {{ item.produto.preco|floatformat:2 }}</td>
+                        <td>{{ item.quantidade }}</td>
+                        <td>R$ {{ item.sub_total|floatformat:2 }}</td>
+                        <td>
+                            <a href="{% url 'compras:remover_do_carrinho' item.id %}" class="btn btn-danger btn-sm">
+                                Remover
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="text-right">
+            <h3>Total: R$ {{ total|floatformat:2 }}</h3>
+            <a href="{% url 'pedidos:finalizar_pedido' %}" class="btn btn-success">
+                Finalizar Compra
+            </a>
+            <a href="{% url 'produtos:lista_produtos' %}" class="btn btn-secondary">
+                Continuar Comprando
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

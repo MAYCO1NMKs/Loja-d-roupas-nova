@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 
-{% block title %}Nossos Produtos - ShopModerno{% endblock %}
+{% block title %}Nossa Coleção - StyleWear{% endblock %}
 
 {% block content %}
 
-<!-- Cabeçalho da Página Modernizado -->
+<!-- Cabeçalho da Página -->
 <div class="page-header">
   <h1>Nossa Coleção</h1>
   <p>Qualidade e estilo em cada peça.</p>
@@ -15,21 +15,24 @@
   {% for produto in produtos %}
   <div class="product-card">
     
-    <!-- Contêiner da Imagem para Efeito de Hover -->
-    <div class="product-image-container">
-      {% if produto.imagem %}
-        <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" class="product-image">
-      {% else %}
-        <!-- Placeholder de imagem otimizado para o tema escuro -->
-        <img src="https://via.placeholder.com/400x400.png/1E1E1E/B3B3B3?text=ShopModerno" alt="Imagem Padrão" class="product-image">
-      {% endif %}
-    </div>
+    <!-- Link envolvendo a imagem -->
+    <a href="{% url 'produtos:detalhe_produto' produto.id %}">
+      <div class="product-image-container">
+        {% if produto.imagem %}
+          <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" class="product-image">
+        {% else %}
+          <img src="https://via.placeholder.com/400x400.png/1E1E1E/B3B3B3?text=StyleWear" alt="Imagem Padrão" class="product-image">
+        {% endif %}
+      </div>
+    </a>
     
     <!-- Informações do Produto -->
     <div class="product-info">
-      <h3 class="product-title">{{ produto.nome }}</h3>
+      <!-- Link envolvendo o título -->
+      <a href="{% url 'produtos:detalhe_produto' produto.id %}" style="text-decoration: none; color: inherit;">
+        <h3 class="product-title">{{ produto.nome }}</h3>
+      </a>
       <p class="product-price">R$ {{ produto.preco|floatformat:2 }}</p>
-      <!-- Botão com o novo estilo ".btn" -->
       <a href="{% url 'carrinho:adicionar_ao_carrinho' produto.id %}" class="btn">Adicionar ao Carrinho</a>
     </div>
 

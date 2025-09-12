@@ -1,0 +1,107 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Minha Conta{% endblock %}
+
+{% block extra_css %}
+<style>
+    .profile-card {
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        transition: 0.3s;
+        border-radius: 5px;
+    }
+
+    .profile-card:hover {
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    }
+
+    .profile-avatar {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin: 25px auto;
+        display: block;
+        border: 4px solid #fff;
+        box-shadow: 0 2px 4px 0 rgba(0,0,0,0.1);
+    }
+
+    .profile-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .section-title {
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+        font-weight: 600;
+        color: #333;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <h2 class="section-title">Minha Conta</h2>
+    <div class="row">
+        <!-- Profile Information Card -->
+        <div class="col-md-4">
+            <div class="card profile-card text-center">
+                <div class="card-header profile-header">
+                    <h4>Perfil</h4>
+                </div>
+                <div class="card-body">
+                    <img src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% else %}{% static 'images/default_avatar.png' %}{% endif %}" alt="Avatar" class="profile-avatar">
+                    <h5 class="card-title">{{ user.get_full_name|default:user.username }}</h5>
+                    <p class="card-text text-muted">{{ user.email }}</p>
+                </div>
+            </div>
+            <!-- Account Management Card -->
+            <div class="card profile-card mt-4">
+                <div class="card-header profile-header">
+                    <h4>Gerenciar Conta</h4>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="#" class="list-group-item list-group-item-action">Editar Perfil</a>
+                    <a href="#" class="list-group-item list-group-item-action">Alterar Senha</a>
+                    <a href="{% url 'usuario:logout' %}" class="list-group-item list-group-item-action text-danger">Sair</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order History Card -->
+        <div class="col-md-8">
+            <div class="card profile-card">
+                <div class="card-header profile-header">
+                    <h4>Histórico de Pedidos</h4>
+                </div>
+                <div class="card-body">
+                    {% if user.pedidos.all %}
+                        <div class="list-group">
+                            {% for pedido in user.pedidos.all|slice:":5" %}  <!-- Mostra os últimos 5 pedidos -->
+                                <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">Pedido #{{ pedido.id }}</h5>
+                                        <small>{{ pedido.data_pedido|date:"d/m/Y" }}</small>
+                                    </div>
+                                    <p class="mb-1">Total: R$ {{ pedido.get_total_pedido|floatformat:2 }}</p>
+                                    <small>Status: {{ pedido.get_status_display }}</small>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-center text-muted">Você ainda não fez nenhum pedido.</p>
+                    {% endif %}
+                </div>
+                {% if user.pedidos.all|length > 5 %}
+                <div class="card-footer text-center">
+                    <a href="#">Ver todos os pedidos</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

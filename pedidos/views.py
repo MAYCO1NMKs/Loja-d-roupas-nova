@@ -1,3 +1,4 @@
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Pedido, ItemPedido
@@ -14,8 +15,12 @@ def finalizar_pedido(request):
     # ou nada é alterado se algo der errado.
     try:
         with transaction.atomic():
-            # Obtém o carrinho do usuário logado
-            carrinho, criado = Carrinho.objects.get_or_create(usuario=request.user)
+            # Obtém o carrinho da sessão
+            try:
+                carrinho = Carrinho.objects.get(id_sessao=request.session.session_key)
+            except Carrinho.DoesNotExist:
+                # Se não houver carrinho, não há nada a fazer
+                return redirect('ver_carrinho')
 
             if not carrinho.itens.exists():
                 return redirect('ver_carrinho')
@@ -32,8 +37,8 @@ def finalizar_pedido(request):
                     preco=item_carrinho.produto.preco
                 )
             
-            # Limpa o carrinho do usuário após a criação do pedido
-            carrinho.itens.all().delete()
+            # Limpa o carrinho após a criação do pedido
+            carrinho.delete()
             
             return redirect('historico_pedidos')
 

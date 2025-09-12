@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ produto.nome }} - StyleWear{% endblock %}
+
+{% block content %}
+<div class="product-detail-container">
+
+    <!-- Coluna da Imagem -->
+    <div class="product-detail-image">
+        {% if produto.imagem %}
+            <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}">
+        {% else %}
+            <img src="https://via.placeholder.com/600x600.png/1E1E1E/B3B3B3?text=StyleWear" alt="Imagem Padrão">
+        {% endif %}
+    </div>
+
+    <!-- Coluna das Informações -->
+    <div class="product-detail-info">
+        <h1 class="product-detail-title">{{ produto.nome }}</h1>
+        <p class="product-detail-price">R$ {{ produto.preco|floatformat:2 }}</p>
+
+        <p class="product-detail-description">{{ produto.descricao }}</p>
+
+        <!-- Formulário de Adição ao Carrinho -->
+        <form action="{% url 'carrinho:adicionar_ao_carrinho' produto.id %}" method="post" class="add-to-cart-form">
+            {% csrf_token %}
+            
+            <!-- Seletor de Cor -->
+            <div class="form-group">
+                <label for="cor-select">Cor:</label>
+                <select name="cor" id="cor-select" class="form-control">
+                    {% for cor in produto.cores.all %}
+                        <option value="{{ cor.id }}">{{ cor.nome }}</option>
+                    {% empty %}
+                        <option disabled>Nenhuma cor disponível</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Seletor de Tamanho -->
+            <div class="form-group">
+                <label for="tamanho-select">Tamanho:</label>
+                <select name="tamanho" id="tamanho-select" class="form-control">
+                    {% for tamanho in produto.tamanhos.all %}
+                        <option value="{{ tamanho.id }}">{{ tamanho.nome }}</option>
+                    {% empty %}
+                        <option disabled>Nenhum tamanho disponível</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Adicionar ao Carrinho</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

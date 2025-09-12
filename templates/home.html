@@ -1,45 +1,51 @@
-
 {% extends 'base.html' %}
 
-{% block title %}Bem-vindo à StyleMen{% endblock %}
+{% block title %}StyleWear - Reinvente Seu Estilo{% endblock %}
 
 {% block content %}
-<div class="p-5 mb-4 bg-light rounded-3 text-center">
-    <div class="container-fluid py-5">
-        <h1 class="display-5 fw-bold">Estilo e Sofisticação para o Homem Moderno</h1>
-        <p class="fs-4">Descubra nossas coleções exclusivas e encontre o seu visual perfeito. Qualidade e design que acompanham você.</p>
-        <a class="btn btn-primary btn-lg" href="/produtos" role="button">Ver Produtos</a>
-    </div>
+<!-- Seção Hero com Imagem de Banner -->
+<section class="hero-section">
+  <div class="hero-content">
+    <h1>StyleWear: Reinvente Seu Estilo</h1>
+    <p>Explore coleções que definem tendências. Qualidade e design para quem vive a moda.</p>
+    <a href="{% url 'produtos:lista_produtos' %}" class="btn btn-primary">Explorar Coleção</a>
+  </div>
+</section>
+
+<!-- Seção de Produtos em Destaque -->
+<div class="page-header">
+  <h2>Nossas Coleções</h2>
+  <p>Do casual ao elegante, encontre o look perfeito para cada ocasião.</p>
 </div>
 
-<div class="row text-center">
-    <h2 class="mb-4">Em Destaque</h2>
-    <div class="col-md-4">
-        <div class="card">
-            <img src="https://via.placeholder.com/300" class="card-img-top" alt="Produto em destaque 1">
-            <div class="card-body">
-                <h5 class="card-title">Camisas Casuais</h5>
-                <p class="card-text">Conforto e estilo para o dia a dia.</p>
-            </div>
-        </div>
+<div class="product-grid">
+  {% for produto in produtos %}
+  <div class="product-card">
+    <!-- Link envolvendo a imagem -->
+    <a href="{% url 'produtos:detalhe_produto' produto.id %}">
+      <div class="product-image-container">
+        {% if produto.imagem %}
+          <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" class="product-image">
+        {% else %}
+          <img src="https://via.placeholder.com/400x400.png/1E1E1E/B3B3B3?text=StyleWear" alt="Imagem Padrão" class="product-image">
+        {% endif %}
+      </div>
+    </a>
+    <div class="product-info">
+      <!-- Link envolvendo o título -->
+      <a href="{% url 'produtos:detalhe_produto' produto.id %}" style="text-decoration: none; color: inherit;">
+        <h3 class="product-title">{{ produto.nome }}</h3>
+      </a>
+      <p class="product-price">R$ {{ produto.preco|floatformat:2 }}</p>
+      <a href="{% url 'carrinho:adicionar_ao_carrinho' produto.id %}" class="btn">Adicionar ao Carrinho</a>
     </div>
-    <div class="col-md-4">
-        <div class="card">
-            <img src="https://via.placeholder.com/300" class="card-img-top" alt="Produto em destaque 2">
-            <div class="card-body">
-                <h5 class="card-title">Calças Jeans</h5>
-                <p class="card-text">Durabilidade e caimento perfeito.</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card">
-            <img src="https://via.placeholder.com/300" class="card-img-top" alt="Produto em destaque 3">
-            <div class="card-body">
-                <h5 class="card-title">Acessórios</h5>
-                <p class="card-text">O detalhe que faz a diferença.</p>
-            </div>
-        </div>
-    </div>
+  </div>
+  {% empty %}
+  <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 0;">
+      <h3 style="color: var(--text-secondary);">Nenhuma coleção no momento.</h3>
+      <p style="color: var(--text-secondary);">Nossa vitrine está sendo preparada. Volte em breve para novidades!</p>
+  </div>
+  {% endfor %}
 </div>
+
 {% endblock %}

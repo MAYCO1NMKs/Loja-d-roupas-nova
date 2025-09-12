@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Seu Carrinho de Compras{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Seu Carrinho de Compras</h2>
+    <hr>
+
+    {% if carrinho and carrinho.itens.all %}
+        <table class="table table-hover">
+            <thead class="thead-light">
+                <tr>
+                    <th>Produto</th>
+                    <th>Quantidade</th>
+                    <th class="text-right">Preço Unitário</th>
+                    <th class="text-right">Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in carrinho.itens.all %}
+                <tr>
+                    <td>{{ item.produto.nome }}</td>
+                    <td>{{ item.quantidade }}</td>
+                    <td class="text-right">R$ {{ item.produto.preco|floatformat:2 }}</td>
+                    <td class="text-right">R$ {{ item.get_subtotal|floatformat:2 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr class="table-info">
+                    <td colspan="3" class="text-right"><strong>Total</strong></td>
+                    <td class="text-right"><strong>R$ {{ carrinho.get_total_carrinho|floatformat:2 }}</strong></td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="text-right mt-4">
+            <a href="{% url 'home' %}" class="btn btn-secondary">Continuar Comprando</a>
+            <a href="#" class="btn btn-primary">Finalizar Compra</a>
+        </div>
+
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            Seu carrinho está vazio.
+        </div>
+        <a href="{% url 'home' %}" class="btn btn-primary">Ver Produtos</a>
+    {% endif %}
+
+</div>
+{% endblock %}
