@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 
-{% block title %}Nossos Produtos - Minha Loja{% endblock %}
+{% block title %}Nossos Produtos - ShopModerno{% endblock %}
 
 {% block content %}
 
-<!-- Cabeçalho da Página -->
+<!-- Cabeçalho da Página Modernizado -->
 <div class="page-header">
-  <h1>Nossos Produtos</h1>
-  <p>Confira as últimas tendências e novidades.</p>
+  <h1>Nossa Coleção</h1>
+  <p>Qualidade e estilo em cada peça.</p>
 </div>
 
 <!-- Grade de Produtos -->
@@ -15,27 +15,29 @@
   {% for produto in produtos %}
   <div class="product-card">
     
-    <!-- Imagem do Produto -->
-    {% if produto.imagem %}
-      <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" class="product-image">
-    {% else %}
-      <img src="https://via.placeholder.com/300x250?text=Sem+Imagem" alt="Imagem Padrão" class="product-image">
-    {% endif %}
+    <!-- Contêiner da Imagem para Efeito de Hover -->
+    <div class="product-image-container">
+      {% if produto.imagem %}
+        <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" class="product-image">
+      {% else %}
+        <!-- Placeholder de imagem otimizado para o tema escuro -->
+        <img src="https://via.placeholder.com/400x400.png/1E1E1E/B3B3B3?text=ShopModerno" alt="Imagem Padrão" class="product-image">
+      {% endif %}
+    </div>
     
     <!-- Informações do Produto -->
     <div class="product-info">
       <h3 class="product-title">{{ produto.nome }}</h3>
-      <p class="product-description">{{ produto.descricao|truncatewords:15 }}</p>
-      <div class="product-price">R$ {{ produto.preco|floatformat:2 }}</div>
-      <a href="{% url 'carrinho:adicionar_ao_carrinho' produto.id %}" class="btn-primary">Adicionar ao Carrinho</a>
+      <p class="product-price">R$ {{ produto.preco|floatformat:2 }}</p>
+      <!-- Botão com o novo estilo ".btn" -->
+      <a href="{% url 'carrinho:adicionar_ao_carrinho' produto.id %}" class="btn">Adicionar ao Carrinho</a>
     </div>
 
   </div>
   {% empty %}
-  <div class="col-12" style="grid-column: 1 / -1; text-align: center;">
-    <div class="alert alert-warning" role="alert">
-      Nenhum produto cadastrado no momento.
-    </div>
+  <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 0;">
+    <h3 style="color: var(--text-secondary);">Nenhum produto encontrado.</h3>
+    <p style="color: var(--text-secondary);">Nossa coleção está sendo preparada. Volte em breve!</p>
   </div>
   {% endfor %}
 </div>

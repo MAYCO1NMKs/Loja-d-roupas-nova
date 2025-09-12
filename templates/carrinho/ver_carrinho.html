@@ -1,54 +1,70 @@
 {% extends "base.html" %}
 
-{% block title %}Meu Carrinho - Minha Loja{% endblock %}
+{% block title %}Meu Carrinho - ShopModerno{% endblock %}
 
 {% block content %}
-<div class="container my-5">
-  <h2 class="mb-4">Meu Carrinho de Compras</h2>
-  
-  {% if carrinho and carrinho.itens.all %}
-    <div class="card">
-      <table class="table table-hover">
-        <thead class="table-dark">
-          <tr>
-            <th scope="col">Produto</th>
-            <th scope="col" class="text-center">Quantidade</th>
-            <th scope="col" class="text-end">Preço Unitário</th>
-            <th scope="col" class="text-end">Preço Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for item in carrinho.itens.all %}
-          <tr>
-            <td>
-              <div class="d-flex align-items-center">
-                {% if item.produto.imagem %}
-                  <img src="{{ item.produto.imagem.url }}" alt="{{ item.produto.nome }}" style="width: 50px; height: 50px; object-fit: cover; margin-right: 15px;">
-                {% endif %}
-                <strong>{{ item.produto.nome }}</strong>
-              </div>
-            </td>
-            <td class="text-center">{{ item.quantidade }}</td>
-            <td class="text-end">R$ {{ item.produto.preco|floatformat:2 }}</td>
-            <td class="text-end">R$ {{ item.get_total|floatformat:2 }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-        <tfoot class="table-group-divider">
-          <tr>
-            <td colspan="3" class="text-end"><strong>Total do Carrinho:</strong></td>
-            <td class="text-end fs-5"><strong>R$ {{ carrinho.get_total_carrinho|floatformat:2 }}</strong></td>
-          </tr>
-        </tfoot>
-      </table>
-    </div>
-    <div class="d-flex justify-content-end mt-4">
-      <a href="{% url 'pedidos:checkout' %}" class="btn btn-primary btn-lg">Finalizar Compra</a>
-    </div>
-  {% else %}
-    <div class="alert alert-info" role="alert">
-      Seu carrinho de compras está vazio. <a href="/" class="alert-link">Comece a comprar!</a>
-    </div>
-  {% endif %}
+
+<div class="page-header">
+  <h1>Meu Carrinho</h1>
 </div>
+
+{% if carrinho and carrinho.itens.all %}
+  <div class="cart-layout">
+    
+    <!-- Coluna da Esquerda: Itens do Carrinho -->
+    <div class="cart-items">
+      {% for item in carrinho.itens.all %}
+      <div class="cart-item">
+        <div class="cart-item-image">
+          {% if item.produto.imagem %}
+            <img src="{{ item.produto.imagem.url }}" alt="{{ item.produto.nome }}">
+          {% else %}
+            <img src="https://via.placeholder.com/100x100.png/1E1E1E/B3B3B3?text=ShopModerno" alt="Imagem Padrão">
+          {% endif %}
+        </div>
+        <div class="cart-item-details">
+          <h4>{{ item.produto.nome }}</h4>
+          <p class="price">R$ {{ item.produto.preco|floatformat:2 }}</p>
+          <small>Quantidade: {{ item.quantidade }}</small>
+        </div>
+        <div class="cart-item-total">
+          <p>R$ {{ item.get_total|floatformat:2 }}</p>
+        </div>
+        <div class="cart-item-actions">
+          <form action="{% url 'carrinho:remover_do_carrinho' item.id %}" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">Remover</button>
+          </form>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Coluna da Direita: Resumo do Pedido -->
+    <div class="cart-summary">
+      <h3>Resumo do Pedido</h3>
+      <div class="summary-row">
+        <span>Subtotal</span>
+        <span>R$ {{ carrinho.get_total_carrinho|floatformat:2 }}</span>
+      </div>
+      <div class="summary-row">
+        <span>Frete</span>
+        <span>Grátis</span>
+      </div>
+      <div class="summary-total">
+        <span>Total</span>
+        <span>R$ {{ carrinho.get_total_carrinho|floatformat:2 }}</span>
+      </div>
+      <a href="#" class="btn">Finalizar Compra</a> {# O link para checkout será ajustado depois #}
+    </div>
+
+  </div>
+{% else %}
+  <div class="empty-cart-message">
+    <h3>Seu carrinho está vazio.</h3>
+    <p>Adicione produtos da nossa coleção para vê-los aqui.</p>
+    <a href="{% url 'produtos:lista_produtos' %}" class="btn">Ver Produtos</a>
+  </div>
+{% endif %}
+
 {% endblock %}

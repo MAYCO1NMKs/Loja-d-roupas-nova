@@ -1,52 +1,43 @@
-# To learn more about how to use Nix to configure your environment
-# see: https://developers.google.com/idx/guides/customize-idx-env
 { pkgs, ... }: {
-  # Which nixpkgs channel to use.
-  channel = "stable-24.05"; # or "unstable"
+  # Usa o canal estavel do Nix
+  channel = "stable-24.05";
 
-  # Use https://search.nixos.org/packages to find packages
+  # Instala o Python e o pip usando o Nix
   packages = [
-    pkgs.python311
-    pkgs.python311Packages.pip
+    pkgs.python3
+    pkgs.pip
   ];
 
-  # Sets environment variables in the workspace
-  env = {};
-
   idx = {
-    # Search for the extensions you want on https://open-vsx.org/ and use "publisher.id"
     extensions = [
+      # Extensao recomendada para desenvolvimento em Python
       "ms-python.python"
     ];
+    workspace = {
+      # Roda apenas uma vez quando o workspace e criado.
+      onCreate = {
+        # Cria um ambiente virtual
+        create-venv = "python -m venv venv";
+        # Instala as dependencias do requirements.txt no ambiente virtual
+        install-deps = "venv/bin/pip install -r requirements.txt";
+      };
 
-    # Enable previews and configure the web preview for Django
+      # Roda toda vez que o workspace e iniciado.
+      onStart = {
+        # Roda as migracoes do banco de dados
+        migrate = "venv/bin/python manage.py migrate";
+      };
+    };
+
+    # Configura o preview da aplicacao web
     previews = {
       enable = true;
       previews = {
         web = {
-          # Command to start the Django development server.
-          # It uses the $PORT environment variable provided by IDX.
+          # Comando para iniciar o servidor de desenvolvimento do Django usando o Python do ambiente virtual
           command = ["venv/bin/python", "manage.py", "runserver", "0.0.0.0:$PORT"];
-          # Tells IDX to manage this process and show it in the Previews panel.
           manager = "web";
         };
-      };
-    };
-
-    # Workspace lifecycle hooks
-    workspace = {
-      # Runs when a workspace is first created
-      onCreate = {
-        # Install python dependencies from requirements.txt
-        install-deps = "pip install -r requirements.txt";
-        # Open editors for the following files by default, if they exist:
-        default.openFiles = [ ".idx/dev.nix" "README.md" ];
-      };
-
-      # Runs when the workspace is (re)started
-      onStart = {
-        # Apply database migrations
-        migrate = "python manage.py migrate";
       };
     };
   };

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ produto.nome }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <!-- Coluna da Imagem -->
+        <div class="col-md-6 mb-4">
+            <img src="{% if produto.imagem %}{{ produto.imagem.url }}{% else %}https://via.placeholder.com/500x500{% endif %}" class="img-fluid rounded" alt="{{ produto.nome }}">
+        </div>
+
+        <!-- Coluna dos Detalhes -->
+        <div class="col-md-6">
+            <h2>{{ produto.nome }}</h2>
+            <p class="lead text-muted">{{ produto.descricao }}</p>
+            <hr>
+            <h4>R$ {{ produto.preco|floatformat:2 }}</h4>
+            <hr>
+            <form method="post" action="/carrinho/adicionar/{{ produto.id }}/">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="quantidade">Quantidade:</label>
+                            <input type="number" name="quantidade" id="quantidade" class="form-control" value="1" min="1">
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg mt-3">Adicionar ao Carrinho</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

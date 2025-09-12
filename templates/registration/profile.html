@@ -1,33 +1,29 @@
 {% extends "base.html" %}
 
-{% block title %}Meu Perfil - Minha Loja{% endblock %}
+{% block title %}Meu Perfil - ShopModerno{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-  <div class="col-md-8">
-    <div class="card">
-      <div class="card-header">
-        <h2 class="text-center">Meu Perfil</h2>
-      </div>
-      <div class="card-body">
-        <div class="row">
-          <div class="col-md-4 text-center">
-            {% if user.image_profile %}
-              <img src="{{ user.image_profile.url }}" alt="Foto de Perfil de {{ user.username }}" class="img-fluid rounded-circle mb-3">
-            {% else %}
-              <img src="https://via.placeholder.com/150" alt="Foto de Perfil Padrão" class="img-fluid rounded-circle mb-3">
-            {% endif %}
-          </div>
-          <div class="col-md-8">
-            <h3><strong>Nome de usuário:</strong> {{ user.username }}</h3>
-            <p><strong>Email:</strong> {{ user.email }}</p>
-            <!-- Adicione mais informações do perfil aqui se desejar -->
-            <a href="#" class="btn btn-primary">Editar Perfil</a>
-            <a href="{% url 'usuario:logout' %}" class="btn btn-danger">Sair</a>
-          </div>
-        </div>
-      </div>
+
+<div class="page-header">
+  <h1>Meu Perfil</h1>
+</div>
+
+<div class="profile-container">
+  <div class="profile-image">
+    {% if user.image_profile %}
+        <img src="{{ user.image_profile.url }}" alt="Foto de Perfil de {{ user.username }}">
+    {% else %}
+        <img src="https://via.placeholder.com/180x180.png/1E1E1E/B3B3B3?text={{user.username|first|upper}}" alt="Foto de Perfil Padrão">
+    {% endif %}
+  </div>
+  <div class="profile-info">
+    <h2>{{ user.username }}</h2>
+    <p>{{ user.email }}</p>
+    <div class="profile-actions">
+      <a href="#" class="btn">Editar Perfil</a>
+      <a href="{% url 'usuario:logout' %}" class="btn btn-outline">Sair</a>
     </div>
   </div>
 </div>
+
 {% endblock %}

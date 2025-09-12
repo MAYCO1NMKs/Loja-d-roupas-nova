@@ -1,10 +1,8 @@
 from django.urls import path
-from . import views
+from .views import ProdutoListAPIView
 
-# Define o namespace para este aplicativo
-app_name = 'produtos'
+app_name = 'produtos_api'
 
 urlpatterns = [
-    # O caminho agora é '' (vazio), pois o prefixo /produtos/ será definido no arquivo de URLs principal.
-    path('', views.lista_produtos, name='lista_produtos'),
+    path('produtos/', ProdutoListAPIView.as_view(), name='lista_produtos_api'),
 ]
