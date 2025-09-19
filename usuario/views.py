@@ -9,7 +9,7 @@ def register_view(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('lista_produtos')  # Redireciona para a lista de produtos
+            return redirect('lista_produtos')
     else:
         form = CustomUserCreationForm()
     return render(request, 'registration/register.html', {'form': form})
@@ -20,7 +20,14 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('lista_produtos')  # Redireciona para a lista de produtos
+            # Define o tempo de vida da sessão
+            if form.cleaned_data.get('remember_me'):
+                # Define a sessão para durar 2 semanas
+                request.session.set_expiry(1209600)  
+            else:
+                # A sessão expira quando o navegador for fechado
+                request.session.set_expiry(0)
+            return redirect('lista_produtos')
     else:
         form = CustomAuthenticationForm()
     return render(request, 'registration/login.html', {'form': form})

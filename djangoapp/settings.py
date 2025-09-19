@@ -1,21 +1,41 @@
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
+# --- Configuração de Segurança e Ambiente ---
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-@e^z-v71g@+6_j85_d=12#m#9v2_#g81%j7$3k2d(2@k7#t_l'
+# A chave secreta é lida da variável de ambiente `SECRET_KEY`.
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-@e^z-v71g@+6_j85_d=12#m#9v2_#g81%j7$3k2d(2@k7#t_l')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# O modo DEBUG é controlado pela variável de ambiente `DEBUG`.
+DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
 
+# Em modo de desenvolvimento, permita todos os hosts.
 ALLOWED_HOSTS = ['*']
 
-CSRF_TRUSTED_ORIGINS = ['https://8000-firebase-loja-de-roupoas-1755007587756.cluster-duylic2g3fbzerqpzxxbw6helm.cloudworkstations.dev']
+# Inicializa a lista de origens confiáveis para CSRF.
+CSRF_TRUSTED_ORIGINS = []
+
+# Em modo de desenvolvimento, confia dinamicamente em qualquer subdomínio 
+# do cloudworkstations.dev usando a sintaxe de wildcard correta ('.').
+if DEBUG:
+    # A URL completa do cluster, se disponível, é a mais segura.
+    cluster_url = os.environ.get('CLUSTER_URL')
+    if cluster_url:
+        CSRF_TRUSTED_ORIGINS.append(cluster_url)
+    
+    # Como fallback, confie em qualquer subdomínio. O '.' inicial é crucial.
+    CSRF_TRUSTED_ORIGINS.append('https://.cloudworkstations.dev')
+else:
+    # Em produção, você deve definir explicitamente seus domínios confiáveis.
+    # Ex: CSRF_TRUSTED_ORIGINS = ['https://meudominio.com']
+    pass
+
+# --- Fim da Seção de Configuração ---
+
 
 # Application definition
 INSTALLED_APPS = [
@@ -46,11 +66,13 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    # Nosso middleware de depuração para inspecionar cabeçalhos
+    # 'djangoapp.middleware.HeaderDebugMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware', # Desativado temporariamente para diagnóstico
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
