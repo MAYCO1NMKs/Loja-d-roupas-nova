@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Coleções em Destaque - D Roupas-Nova{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Seção Hero com Imagem de Banner -->
+<section class="hero-section">
+  <div class="hero-content">
+    <h1>Coleções em Destaque</h1>
+    <p>Uma seleção especial das peças mais estilosas e desejadas da estação. Looks que definem tendências.</p>
+  </div>
+</section>
+
+<!-- Seção de Produtos em Destaque -->
+<div class="page-header">
+  <h2>As Peças Mais Estilosas</h2>
+  <p>Qualidade e design que você percebe no primeiro toque.</p>
+</div>
+
+<div class="product-grid">
+  {% for produto in produtos %}
+  <div class="product-card">
+    <!-- Link envolvendo a imagem -->
+    <a href="{% url 'produtos:detalhe_produto' id=produto.id slug=produto.slug %}">
+      <div class="product-image-container">
+        {% if produto.imagem %}
+          <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" class="product-image">
+        {% else %}
+          <img src="https://via.placeholder.com/400x400.png/001f3f/FFFFFF?text=StyleMen" alt="Imagem Padrão" class="product-image">
+        {% endif %}
+      </div>
+    </a>
+    <div class="product-info">
+      <!-- Link envolvendo o título -->
+      <a href="{% url 'produtos:detalhe_produto' id=produto.id slug=produto.slug %}" style="text-decoration: none; color: inherit;">
+        <h3 class="product-title">{{ produto.nome }}</h3>
+      </a>
+      <p class="product-price">R$ {{ produto.preco|floatformat:2 }}</p>
+      <a href="{% url 'produtos:detalhe_produto' id=produto.id slug=produto.slug %}" class="btn">Ver Opções</a>
+    </div>
+  </div>
+  {% empty %}
+  <div class="no-products-message">
+      <h3>Nenhuma peça em destaque no momento.</h3>
+      <p>Nossos curadores de estilo estão trabalhando para trazer o melhor para você. Volte em breve!</p>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

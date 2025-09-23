@@ -1,22 +1,22 @@
 from django.contrib import admin
-from .models import Categoria, Produto, Cor, Tamanho
+from .models import Produto, VariacaoProduto
 
-# Register your models here.
-
-@admin.register(Categoria)
-class CategoriaAdmin(admin.ModelAdmin):
-    list_display = ('nome',)
+# Inline para facilitar a adição de variações de produto diretamente na página do produto
+class VariacaoProdutoInline(admin.TabularInline):
+    model = VariacaoProduto
+    extra = 1 # Mostra 1 formulário extra por padrão
 
 @admin.register(Produto)
 class ProdutoAdmin(admin.ModelAdmin):
-    list_display = ('nome', 'categoria', 'preco', 'disponivel', 'imagem')
-    list_filter = ('disponivel', 'categoria')
-    search_fields = ('nome', 'descricao')
+    list_display = ('nome', 'preco', 'disponivel', 'criado_em', 'atualizado_em')
+    list_filter = ('disponivel', 'criado_em', 'atualizado_em')
+    list_editable = ('preco', 'disponivel')
+    prepopulated_fields = {'slug': ('nome',)}
+    inlines = [VariacaoProdutoInline]
 
-@admin.register(Cor)
-class CorAdmin(admin.ModelAdmin):
-    list_display = ('nome',)
-
-@admin.register(Tamanho)
-class TamanhoAdmin(admin.ModelAdmin):
-    list_display = ('nome',)
+# Opcional: registrar VariacaoProduto separadamente se quiser um gerenciamento mais detalhado
+@admin.register(VariacaoProduto)
+class VariacaoProdutoAdmin(admin.ModelAdmin):
+    list_display = ('produto', 'tamanho', 'estoque')
+    list_filter = ('tamanho', 'produto__nome')
+    search_fields = ('produto__nome',)

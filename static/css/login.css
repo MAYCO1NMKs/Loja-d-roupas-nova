@@ -1,0 +1,151 @@
+
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    background-color: #f8f9fa;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 420px;
+    padding: 2.5rem;
+    border-radius: 12px;
+    background-color: #fff;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.login-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.login-subtitle {
+    font-size: 1rem;
+    color: #6c757d;
+    margin-bottom: 2rem;
+}
+
+.login-subtitle a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.social-login {
+    margin-bottom: 1.5rem;
+}
+
+.social-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.google-btn {
+    background-color: #fff;
+    color: #444;
+    border: 1px solid #ddd;
+}
+
+.google-btn:hover {
+    background-color: #f7f7f7;
+}
+
+.facebook-btn {
+    background-color: #1877f2;
+    color: #fff;
+}
+
+.facebook-btn:hover {
+    background-color: #166fe5;
+}
+
+.social-btn svg {
+    margin-right: 10px;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #adb5bd;
+    margin: 1.5rem 0;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.divider:not(:empty)::before {
+    margin-right: .5em;
+}
+
+.divider:not(:empty)::after {
+    margin-left: .5em;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #495057;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.form-actions {
+    margin-top: 1.5rem;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 0.9rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    background-color: #007bff;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #0069d9;
+}
+
+.form-footer {
+    margin-top: 1.5rem;
+}

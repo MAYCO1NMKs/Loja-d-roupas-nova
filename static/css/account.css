@@ -1,0 +1,39 @@
+/* static/css/account.css */
+
+body {
+    background-color: #f8f9fa;
+}
+
+.card {
+    border: none;
+    border-radius: 1rem;
+}
+
+.card-title {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+}
+
+.btn-primary {
+    background-color: #343a40;
+    border-color: #343a40;
+}
+
+.btn-primary:hover {
+    background-color: #23272b;
+    border-color: #23272b;
+}
+
+.form-control:focus {
+    border-color: #343a40;
+    box-shadow: 0 0 0 0.2rem rgba(52, 58, 64, 0.25);
+}
+
+.small a {
+    color: #343a40;
+    text-decoration: none;
+}
+
+.small a:hover {
+    text-decoration: underline;
+}

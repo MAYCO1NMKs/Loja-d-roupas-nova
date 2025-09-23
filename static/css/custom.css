@@ -1,0 +1,75 @@
+
+:root {
+    --absolute-black: #000000;
+    --pure-white: #FFFFFF;
+    --subtle-border: #222222; /* Borda quase imperceptível */
+    --form-bg: #1A1A1A;
+}
+
+/* --- Tema Preto Absoluto e Branco --- */
+
+body, .card, .product-card, .account-card, .footer, .navbar.bg-dark {
+    /* Fundo único e uniforme Preto Absoluto */
+    background-color: var(--absolute-black) !important;
+    color: var(--pure-white) !important;
+}
+
+main.container {
+    background-color: transparent !important;
+    padding: 2rem 0;
+}
+
+/* Separação de componentes por borda, não por cor */
+.card, .product-card, .account-card, .footer, .navbar.bg-dark {
+    border: 1px solid var(--subtle-border) !important;
+}
+
+/* Títulos, textos e links em branco puro */
+h1, h2, h3, h4, h5, h6, .page-header h2, .account-title, .navbar-brand,
+.product-title, .product-price, .card-title, .card-text, .account-subtitle, 
+.text-muted, .text-secondary, .page-header p, .navbar-dark .navbar-nav .nav-link, a {
+    color: var(--pure-white) !important;
+}
+
+a {
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+a:hover {
+    color: #cccccc !important;
+}
+
+/* Botões */
+.btn-primary {
+    --bs-btn-color: var(--absolute-black);
+    --bs-btn-bg: var(--pure-white);
+    --bs-btn-border-color: var(--pure-white);
+    --bs-btn-hover-color: var(--absolute-black);
+    --bs-btn-hover-bg: #cccccc;
+    --bs-btn-hover-border-color: #cccccc;
+    font-weight: bold;
+}
+
+.btn-link {
+    color: var(--pure-white) !important;
+    font-weight: bold;
+}
+
+/* Formulários */
+.form-control {
+    background-color: var(--form-bg);
+    color: var(--pure-white);
+    border: 1px solid var(--subtle-border);
+}
+
+.form-control:focus {
+    background-color: var(--form-bg);
+    color: var(--pure-white);
+    border-color: var(--pure-white);
+    box-shadow: none;
+}
+
+.form-label {
+    color: var(--pure-white);
+}

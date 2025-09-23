@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}D Roupas-Nova - O Estilo Define o Homem{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Seção Hero com Imagem de Banner -->
+<section class="hero-section">
+  <div class="hero-content">
+    <h1>D Roupas: O Estilo Define o Homem</h1>
+    <p>Descubra peças essenciais que combinam qualidade, conforto e design moderno. Para o homem que sabe que o estilo é uma forma de expressão.</p>
+    <a href="{% url 'produtos:lista_colecoes' %}" class="btn btn-primary">Explorar Coleção</a>
+  </div>
+</section>
+
+<!-- Seção de Produtos em Destaque -->
+<div class="page-header">
+  <h2>Nossas Coleções</h2>
+  <p>Do casual ao elegante, encontre o look perfeito para cada ocasião.</p>
+</div>
+
+<div class="product-grid">
+  {% for produto in produtos %}
+  <div class="product-card">
+    <!-- Link envolvendo a imagem -->
+    <a href="{% url 'produtos:detalhe_produto' id=produto.id slug=produto.slug %}">
+      <div class="product-image-container">
+        {% if produto.imagem %}
+          <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" class="product-image">
+        {% else %}
+          <img src="https://via.placeholder.com/400x400.png/001f3f/FFFFFF?text=StyleMen" alt="Imagem Padrão" class="product-image">
+        {% endif %}
+      </div>
+    </a>
+    <div class="product-info">
+      <!-- Link envolvendo o título -->
+      <a href="{% url 'produtos:detalhe_produto' id=produto.id slug=produto.slug %}" style="text-decoration: none; color: inherit;">
+        <h3 class="product-title">{{ produto.nome }}</h3>
+      </a>
+      <p class="product-price">R$ {{ produto.preco|floatformat:2 }}</p>
+      <a href="{% url 'produtos:detalhe_produto' id=produto.id slug=produto.slug %}" class="btn">Ver Opções</a>
+    </div>
+  </div>
+  {% empty %}
+  <div class="no-products-message">
+      <h3>Nossas coleções estão sendo cuidadosamente selecionadas.</h3>
+      <p>Em breve, você encontrará peças exclusivas para renovar seu guarda-roupa.</p>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

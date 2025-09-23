@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans "Sign Up" %}{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/account.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body p-5">
+                    <h2 class="card-title text-center mb-4">{% trans "Sign Up" %}</h2>
+
+                    <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        {% if redirect_field_value %}
+                        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                        {% endif %}
+                        <div class="d-grid mt-3">
+                            <button class="btn btn-primary" type="submit">{% trans "Sign Up" %}</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-center py-3">
+                    <div class="small">
+                        <a href="{% url 'account_login' %}">Already have an account? <strong>Sign in!</strong></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

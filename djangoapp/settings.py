@@ -1,3 +1,4 @@
+# Forçando o reinício do servidor
 
 import os
 from pathlib import Path
@@ -16,23 +17,11 @@ DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
 # Em modo de desenvolvimento, permita todos os hosts.
 ALLOWED_HOSTS = ['*']
 
-# Inicializa a lista de origens confiáveis para CSRF.
-CSRF_TRUSTED_ORIGINS = []
-
-# Em modo de desenvolvimento, confia dinamicamente em qualquer subdomínio 
-# do cloudworkstations.dev usando a sintaxe de wildcard correta ('.').
-if DEBUG:
-    # A URL completa do cluster, se disponível, é a mais segura.
-    cluster_url = os.environ.get('CLUSTER_URL')
-    if cluster_url:
-        CSRF_TRUSTED_ORIGINS.append(cluster_url)
-    
-    # Como fallback, confie em qualquer subdomínio. O '.' inicial é crucial.
-    CSRF_TRUSTED_ORIGINS.append('https://.cloudworkstations.dev')
-else:
-    # Em produção, você deve definir explicitamente seus domínios confiáveis.
-    # Ex: CSRF_TRUSTED_ORIGINS = ['https://meudominio.com']
-    pass
+# A URL exata do ambiente é adicionada como uma origem confiável para CSRF.
+# Esta é a abordagem mais segura e direta para resolver o problema.
+CSRF_TRUSTED_ORIGINS = [
+    'https://8000-firebase-loja-de-roupoas-1755007587756.cluster-duylic2g3fbzerqpzxxbw6helm.cloudworkstations.dev'
+]
 
 # --- Fim da Seção de Configuração ---
 
@@ -66,13 +55,11 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    # Nosso middleware de depuração para inspecionar cabeçalhos
-    # 'djangoapp.middleware.HeaderDebugMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware', # Desativado temporariamente para diagnóstico
+    'django.middleware.csrf.CsrfViewMiddleware', # Reativado para segurança
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -127,7 +114,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
-LANGUAGE_CODE = 'pt-br'
+LANGUAGE_CODE = 'en-us' # Alterado para forçar o reinício e usar os templates corretos
 
 TIME_ZONE = 'America/Sao_Paulo'
 

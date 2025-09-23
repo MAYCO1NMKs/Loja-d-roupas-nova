@@ -1,48 +1,25 @@
 from django.shortcuts import render, get_object_or_404
+from rest_framework import viewsets
 from .models import Produto
-
-# Imports para a API
-from rest_framework import generics
 from .serializers import ProdutoSerializer
 
-# --- Views da API ---
-
-class ProdutoListAPIView(generics.ListAPIView):
-    """
-    View da API para listar todos os produtos disponíveis.
-    """
-    queryset = Produto.objects.filter(disponivel=True)
-    serializer_class = ProdutoSerializer
-
-# --- Views do Site (Renderização de HTML) ---
-
+# View para a página inicial, que lista os produtos em destaque
 def home_view(request):
-    """
-    View para a página inicial do site.
-    Exibe os produtos marcados como disponíveis.
-    """
-    produtos = Produto.objects.filter(disponivel=True)
-    context = {
-        'produtos': produtos
-    }
-    return render(request, 'home.html', context)
+    produtos = Produto.objects.filter(disponivel=True, destaque=True)
+    return render(request, 'home.html', {'produtos': produtos})
 
-def lista_produtos(request):
-    """
-    View para exibir a lista de todos os produtos disponíveis.
-    """
-    produtos = Produto.objects.filter(disponivel=True)
-    context = {
-        'produtos': produtos
-    }
-    return render(request, 'produtos/lista_produtos.html', context)
+# NOVA VIEW: para a página de coleções, que lista apenas produtos EM DESTAQUE
+def colecoes_view(request):
+    produtos_destaque = Produto.objects.filter(disponivel=True, destaque=True)
+    return render(request, 'produtos/lista_produtos.html', {'produtos': produtos_destaque})
 
-def detalhe_produto(request, produto_id):
-    """
-    View para exibir os detalhes de um único produto.
-    """
-    produto = get_object_or_404(Produto, id=produto_id, disponivel=True)
-    context = {
-        'produto': produto
-    }
-    return render(request, 'produtos/detalhe_produto.html', context)
+# View para a página de detalhes de um único produto
+def detalhe_produto(request, id, slug):
+    produto = get_object_or_404(Produto, id=id, slug=slug, disponivel=True)
+    # As variações de tamanho estarão disponíveis no template através de `produto.variacoes.all`
+    return render(request, 'produtos/detalhe_produto.html', {'produto': produto})
+
+# ViewSet para a API REST (útil para o futuro)
+class ProdutoViewSet(viewsets.ModelViewSet):
+    queryset = Produto.objects.all()
+    serializer_class = ProdutoSerializer

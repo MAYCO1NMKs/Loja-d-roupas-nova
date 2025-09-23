@@ -1,20 +1,14 @@
 from rest_framework import serializers
-from .models import Produto, Categoria
+from .models import Produto, VariacaoProduto
 
-class CategoriaSerializer(serializers.ModelSerializer):
-    """
-    Serializer para o modelo Categoria.
-    """
+class VariacaoProdutoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Categoria
-        fields = ['id', 'nome']
+        model = VariacaoProduto
+        fields = ['tamanho', 'estoque']
 
 class ProdutoSerializer(serializers.ModelSerializer):
-    """
-    Serializer para o modelo Produto. Inclui a categoria aninhada.
-    """
-    categoria = CategoriaSerializer(read_only=True)
+    variacoes = VariacaoProdutoSerializer(many=True, read_only=True)
 
     class Meta:
         model = Produto
-        fields = ['id', 'nome', 'descricao', 'preco', 'imagem', 'categoria', 'disponivel']
+        fields = ['id', 'nome', 'slug', 'descricao', 'preco', 'imagem', 'disponivel', 'variacoes']

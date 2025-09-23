@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Pedido Confirmado - D Roupas-Nova{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/checkout.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="checkout-container">
+    <div class="page-header text-center">
+        <h2>Obrigado pelo seu pedido!</h2>
+        <p>Sua compra foi realizada com sucesso. Em breve você receberá um e-mail com os detalhes.</p>
+    </div>
+
+    <div class="order-summary-card-wide">
+        <h3>Resumo do Pedido #{{ pedido.id }}</h3>
+        <ul class="item-list">
+            {% for item in pedido.itens.all %}
+                <li class="summary-item">
+                    <span class="item-name">{{ item.quantidade }} x {{ item.produto.nome }}</span>
+                    <span class="item-price">R$ {{ item.get_subtotal|floatformat:2 }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+        <div class="summary-total">
+            <strong>Total do Pedido:</strong>
+            <strong>R$ {{ pedido.get_total_pedido|floatformat:2 }}</strong>
+        </div>
+        <div class="continue-shopping">
+            <a href="{% url 'home' %}" class="btn btn-primary">Continuar Comprando</a>
+            <a href="{% url 'pedidos:historico_pedidos' %}" class="btn btn-secondary">Ver Histórico de Pedidos</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

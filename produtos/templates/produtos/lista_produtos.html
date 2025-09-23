@@ -16,7 +16,7 @@
   <div class="product-card">
     
     <!-- Link envolvendo a imagem -->
-    <a href="{% url 'produtos:detalhe_produto' produto.id %}">
+    <a href="{% url 'produtos:detalhe_produto' id=produto.id slug=produto.slug %}">
       <div class="product-image-container">
         {% if produto.imagem %}
           <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" class="product-image">
@@ -29,11 +29,11 @@
     <!-- Informações do Produto -->
     <div class="product-info">
       <!-- Link envolvendo o título -->
-      <a href="{% url 'produtos:detalhe_produto' produto.id %}" style="text-decoration: none; color: inherit;">
+      <a href="{% url 'produtos:detalhe_produto' id=produto.id slug=produto.slug %}" style="text-decoration: none; color: inherit;">
         <h3 class="product-title">{{ produto.nome }}</h3>
       </a>
       <p class="product-price">R$ {{ produto.preco|floatformat:2 }}</p>
-      <a href="{% url 'carrinho:adicionar_ao_carrinho' produto.id %}" class="btn">Adicionar ao Carrinho</a>
+      <a href="{% url 'carrinho:adicionar_carrinho' produto.id %}" class="btn">Adicionar ao Carrinho</a>
     </div>
 
   </div>
