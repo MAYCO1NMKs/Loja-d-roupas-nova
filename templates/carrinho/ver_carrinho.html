@@ -18,7 +18,7 @@
     <!-- Coluna da Esquerda: Itens do Carrinho -->
     <div class="cart-items">
       {% for item in carrinho.itens.all %}
-        {% with produto=item.produto %}
+        {% with produto=item.variacao.produto %}
         <div class="cart-item">
           <div class="cart-item-image">
             <a href="{{ produto.get_absolute_url }}">
@@ -30,22 +30,22 @@
             </a>
           </div>
           <div class="cart-item-details">
-            <a href="{{ produto.get_absolute_url }}"><h4>{{ produto.nome }}</h4></a>
+            <a href="{{ produto.get_absolute_url }}"><h4>{{ produto.nome }} ({{ item.variacao.tamanho }})</h4></a>
             <p class="price">R$ {{ item.preco|floatformat:2 }}</p>
 
             <!-- Formulário de atualização de quantidade -->
-            <form action="{% url 'carrinho:adicionar_carrinho' produto.id %}" method="post" class="form-update-quantity">
+            <form action="{% url 'carrinho:adicionar_ao_carrinho' produto.id %}" method="post" class="form-update-quantity">
                 {% csrf_token %}
+                <input type="hidden" name="variacao_id" value="{{ item.variacao.id }}">
                 <input type="number" name="quantidade" value="{{ item.quantidade }}" min="1" class="input-quantity">
-                <input type="hidden" name="override" value="True"> {# Para substituir a quantidade #}
                 <button type="submit" class="btn btn-secondary btn-sm">Atualizar</button>
             </form>
           </div>
           <div class="cart-item-total">
-            <p>R$ {{ item.total_preco|floatformat:2 }}</p>
+            <p>R$ {{ item.get_total_price|floatformat:2 }}</p>
           </div>
           <div class="cart-item-actions">
-            <a href="{% url 'carrinho:remover_carrinho' produto.id %}" class="btn btn-danger btn-sm">Remover</a>
+            <a href="{% url 'carrinho:remover_do_carrinho' item.id %}" class="btn btn-danger btn-sm">Remover</a>
           </div>
         </div>
         {% endwith %}
@@ -57,7 +57,7 @@
       <h3>Resumo do Pedido</h3>
       <div class="summary-row">
         <span>Subtotal</span>
-        <span>R$ {{ carrinho.get_total_preco|floatformat:2 }}</span>
+        <span>R$ {{ carrinho.get_total_price|floatformat:2 }}</span>
       </div>
       <div class="summary-row">
         <span>Frete</span>
@@ -65,9 +65,9 @@
       </div>
       <div class="summary-total">
         <span>Total</span>
-        <span>R$ {{ carrinho.get_total_preco|floatformat:2 }}</span>
+        <span>R$ {{ carrinho.get_total_price|floatformat:2 }}</span>
       </div>
-      <a href="{% url 'pedidos:checkout' %}" class="btn btn-primary btn-block">Finalizar Compra</a>
+      <a href="#" class="btn btn-primary btn-block">Finalizar Compra</a>
     </div>
 
   </div>
@@ -75,7 +75,7 @@
   <div class="empty-cart-message">
     <h3>Seu carrinho está vazio.</h3>
     <p>Adicione produtos da nossa coleção para vê-los aqui.</p>
-    <a href="{% url 'home' %}" class="btn">Ver Produtos</a>
+    <a href="{% url 'produtos:lista_colecoes' %}" class="btn">Ver Produtos</a>
   </div>
 {% endif %}
 

@@ -6,30 +6,67 @@
 
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'css/account.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 {% endblock %}
 
 {% block content %}
 <div class="container my-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <div class="card shadow-sm">
+            {% if messages %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endif %}
+            <div class="card shadow-lg border-0">
                 <div class="card-body p-5">
-                    <h2 class="card-title text-center mb-4">{% trans "Sign In" %}</h2>
+                    <div class="text-center mb-4">
+                        <i class="fas fa-user-circle fa-4x text-primary"></i>
+                        <h2 class="card-title mt-3">{% trans "Welcome Back" %}</h2>
+                    </div>
 
                     <form class="login" method="post" action="{% url 'account_login' %}">
                         {% csrf_token %}
-                        {{ form.as_p }}
+                        
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger" role="alert">
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
+
+                        <div class="mb-3">
+                            <label for="id_login" class="form-label">{% trans "Username or Email" %}</label>
+                            {{ form.login }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_password" class="form-label">{% trans "Password" %}</label>
+                            {{ form.password }}
+                        </div>
+                        
+                        <div class="form-check mb-3">
+                            {{ form.remember }}
+                            <label class="form-check-label" for="id_remember">
+                                {% trans "Remember Me" %}
+                            </label>
+                        </div>
+
                         {% if redirect_field_value %}
                         <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
                         {% endif %}
-                        <div class="d-grid mt-3">
-                            <button class="btn btn-primary" type="submit">{% trans "Sign In" %}</button>
+                        <div class="d-grid mt-4">
+                            <button class="btn btn-primary btn-lg" type="submit">
+                                <i class="fas fa-sign-in-alt me-2"></i>{% trans "Sign In" %}
+                            </button>
                         </div>
                     </form>
                 </div>
                 <div class="card-footer text-center py-3">
                     <div class="small">
-                        <a href="{% url 'account_signup' %}">Don't have an account? <strong>Sign up!</strong></a>
+                        <a href="{% url 'account_signup' %}">{% trans "Don't have an account?" %} <strong>{% trans "Sign up!" %}</strong></a>
                     </div>
                 </div>
             </div>

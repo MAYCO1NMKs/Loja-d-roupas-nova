@@ -4,48 +4,81 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h2>Seu Carrinho de Compras</h2>
-    <hr>
+    <h2 class="mb-4">Meu Carrinho</h2>
 
-    {% if carrinho and carrinho.itens.all %}
-        <table class="table table-hover">
-            <thead class="thead-light">
-                <tr>
-                    <th>Produto</th>
-                    <th>Quantidade</th>
-                    <th class="text-right">Preço Unitário</th>
-                    <th class="text-right">Subtotal</th>
-                </tr>
-            </thead>
-            <tbody>
+    <div class="row">
+        <div class="col-md-8">
+            {% if carrinho and carrinho.itens.all %}
                 {% for item in carrinho.itens.all %}
-                <tr>
-                    <td>{{ item.produto.nome }}</td>
-                    <td>{{ item.quantidade }}</td>
-                    <td class="text-right">R$ {{ item.produto.preco|floatformat:2 }}</td>
-                    <td class="text-right">R$ {{ item.get_subtotal|floatformat:2 }}</td>
-                </tr>
+                <div class="card mb-3">
+                    <div class="row g-0">
+                        <div class="col-md-2">
+                            {% if item.variacao.produto.imagem %}
+                                <img src="{{ item.variacao.produto.imagem.url }}" class="img-fluid rounded-start" alt="{{ item.variacao.produto.nome }}">
+                            {% else %}
+                                <img src="https://via.placeholder.com/150x150.png/001f3f/FFFFFF?text=StyleMen" class="img-fluid rounded-start" alt="Imagem Padrão">
+                            {% endif %}
+                        </div>
+                        <div class="col-md-10">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ item.variacao.produto.nome }} ({{ item.variacao.get_tamanho_display }})</h5>
+                                <p class="card-text"><strong>R$ {{ item.get_subtotal|floatformat:2 }}</strong></p>
+                                <form action="{% url 'carrinho:adicionar_ao_carrinho' item.variacao.produto.id %}" method="post" class="d-inline">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="variacao_id" value="{{ item.variacao.id }}">
+                                    <input type="number" name="quantidade" value="{{ item.quantidade }}" min="1" class="form-control" style="width: 80px; display: inline-block;">
+                                    <button type="submit" class="btn btn-sm btn-primary">Atualizar</button>
+                                </form>
+                                <a href="{% url 'carrinho:remover_do_carrinho' item.id %}" class="btn btn-sm btn-danger">Remover</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 {% endfor %}
-            </tbody>
-            <tfoot>
-                <tr class="table-info">
-                    <td colspan="3" class="text-right"><strong>Total</strong></td>
-                    <td class="text-right"><strong>R$ {{ carrinho.get_total_carrinho|floatformat:2 }}</strong></td>
-                </tr>
-            </tfoot>
-        </table>
-
-        <div class="text-right mt-4">
-            <a href="{% url 'home' %}" class="btn btn-secondary">Continuar Comprando</a>
-            <a href="#" class="btn btn-primary">Finalizar Compra</a>
+            {% else %}
+                <div class="alert alert-info" role="alert">
+                    Seu carrinho está vazio.
+                </div>
+                <a href="{% url 'home' %}" class="btn btn-primary">Ver Produtos</a>
+            {% endif %}
         </div>
-
-    {% else %}
-        <div class="alert alert-info" role="alert">
-            Seu carrinho está vazio.
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Resumo do Pedido</h5>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Subtotal
+                            <span>R$ {{ carrinho.get_total_carrinho|floatformat:2 }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Frete
+                            <span>Grátis</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center fw-bold">
+                            Total
+                            <span>R$ {{ carrinho.get_total_carrinho|floatformat:2 }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h5 class="card-title">Formas de Pagamento</h5>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-primary" type="button">
+                            <i class="fas fa-qrcode"></i> Pix
+                        </button>
+                        <button class="btn btn-outline-primary" type="button">
+                            <i class="far fa-credit-card"></i> Cartão de Crédito/Débito
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="d-grid mt-3">
+                <a href="{% url 'pedidos:checkout' %}" class="btn btn-success btn-lg">Finalizar Compra</a>
+            </div>
         </div>
-        <a href="{% url 'home' %}" class="btn btn-primary">Ver Produtos</a>
-    {% endif %}
-
+    </div>
 </div>
 {% endblock %}

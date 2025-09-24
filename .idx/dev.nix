@@ -24,18 +24,11 @@
     workspace = {
       # Roda apenas uma vez quando o workspace é criado.
       onCreate = {
-        # Cria um ambiente virtual
-        create-venv = "python -m venv venv";
-        # Instala as dependências do requirements.txt no ambiente virtual
-        install-deps = "venv/bin/pip install -r requirements.txt";
+        setup = "python -m venv venv && venv/bin/pip install -r requirements.txt";
       };
-
-      # Roda toda vez que o workspace é iniciado.
       onStart = {
-        # Roda as migrações do banco de dados
+        # Roda as migrações quando o workspace inicia
         migrate = "venv/bin/python manage.py migrate";
-        # Cria um superusuário se não existir
-        create-superuser = "venv/bin/python manage.py create_superuser";
       };
     };
 
@@ -44,8 +37,7 @@
       enable = true;
       previews = {
         web = {
-        
-          command = ["venv/bin/python" "manage.py" "runserver" "0.0.0.0:$PORT"];
+          command = ["venv/bin/python" "manage.py" "runserver" "0.0.0.0:8000"];
           manager = "web";
         };
       };

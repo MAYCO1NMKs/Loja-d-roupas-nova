@@ -1,6 +1,6 @@
 /* Estilos para o corpo da página */
 body {
-    background: linear-gradient(to right, #f4f3f3, #f8f8f8); /* Gradiente de fundo moderno */
+    background: linear-gradient(to right, #000000, #000000); /* Gradiente de fundo moderno */
     font-family: 'Poppins', sans-serif; /* Fonte mais moderna */
 }
 
@@ -16,11 +16,11 @@ body {
     max-width: 450px;
     padding: 2.5rem;
     border-radius: 20px;
-    background: rgba(255, 255, 255, 0.2); /* Fundo branco semitransparente */
+    background: rgb(0, 0, 0); /* Fundo branco semitransparente */
     backdrop-filter: blur(10px); /* Efeito de desfoque para o vidro */
     -webkit-backdrop-filter: blur(10px); /* Para compatibilidade com Safari */
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    border: 1px solid rgb(0, 0, 0);
+    box-shadow: 0 8px 32px 0 rgb(253, 253, 253);
 }
 
 /* Título do formulário */
@@ -36,7 +36,7 @@ body {
 }
 
 .form-floating-labels .form-control {
-    background: rgba(255, 255, 255, 0.3);
+    background: rgb(0, 0, 0);
     border: none;
     border-radius: 10px;
     color: #fff;
@@ -49,9 +49,9 @@ body {
 }
 
 .form-floating-labels .form-control:focus {
-    background: rgba(255, 255, 255, 0.4);
+    background: rgb(255, 255, 255);
     outline: none;
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 0 2px rgb(0, 0, 0);
 }
 
 .form-floating-labels label {

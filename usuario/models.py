@@ -4,7 +4,6 @@ from django.db import models
 class User(AbstractUser):
     # Campo existente
     foto_perfil = models.ImageField(upload_to='fotos_perfil/', blank=True, null=True)
-
     # Novos campos para contato e endereço
     telefone = models.CharField(max_length=20, blank=True, null=True, help_text='(XX) XXXXX-XXXX')
     cep = models.CharField('CEP', max_length=10, blank=True, null=True)

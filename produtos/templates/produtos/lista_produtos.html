@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}Nossa Coleção - StyleWear{% endblock %}
+{% block title %}Nossa Coleção - D Roupas-Nova{% endblock %}
+
+{% block extra_head %}
+{# Link para o CSS específico da grade de produtos em destaque #}
+<link rel="stylesheet" href="{% static 'css/featured_products.css' %}">
+{% endblock %}
 
 {% block content %}
 
@@ -10,37 +16,50 @@
   <p>Qualidade e estilo em cada peça.</p>
 </div>
 
-<!-- Grade de Produtos -->
-<div class="product-grid">
+<!-- Grade de Produtos (usando o estilo moderno em destaque) -->
+<div class="featured-product-grid">
   {% for produto in produtos %}
-  <div class="product-card">
-    
-    <!-- Link envolvendo a imagem -->
+  <div class="product-card-featured">
     <a href="{% url 'produtos:detalhe_produto' id=produto.id slug=produto.slug %}">
       <div class="product-image-container">
         {% if produto.imagem %}
           <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" class="product-image">
         {% else %}
-          <img src="https://via.placeholder.com/400x400.png/1E1E1E/B3B3B3?text=StyleWear" alt="Imagem Padrão" class="product-image">
+          <img src="https://via.placeholder.com/400x400.png/001f3f/FFFFFF?text=StyleMen" alt="Imagem Padrão" class="product-image">
         {% endif %}
       </div>
     </a>
-    
-    <!-- Informações do Produto -->
     <div class="product-info">
-      <!-- Link envolvendo o título -->
       <a href="{% url 'produtos:detalhe_produto' id=produto.id slug=produto.slug %}" style="text-decoration: none; color: inherit;">
         <h3 class="product-title">{{ produto.nome }}</h3>
       </a>
       <p class="product-price">R$ {{ produto.preco|floatformat:2 }}</p>
-      <a href="{% url 'carrinho:adicionar_carrinho' produto.id %}" class="btn">Adicionar ao Carrinho</a>
-    </div>
 
+      <!-- Formulário para Adicionar ao Carrinho (NOME DA URL CORRIGIDO) -->
+      <form action="{% url 'carrinho:adicionar_ao_carrinho' produto.id %}" method="post" class="cart-form">
+        {% csrf_token %}
+        <div class="size-selector">
+          <label for="tamanho-{{ produto.id }}">Tamanho:</label>
+          <select name="variacao_id" id="tamanho-{{ produto.id }}" required>
+            <option value="" disabled selected>Selecione</option>
+            {% for variacao in produto.variacoes.all %}
+              {% if variacao.estoque > 0 %}
+                <option value="{{ variacao.id }}">{{ variacao.get_tamanho_display }}</option>
+              {% endif %}
+            {% endfor %}
+          </select>
+        </div>
+        <div class="product-actions">
+          <button type="submit" class="btn btn-success">Adicionar ao Carrinho</button>
+          <a href="{% url 'produtos:detalhe_produto' id=produto.id slug=produto.slug %}" class="btn btn-secondary">Ver Detalhes</a>
+        </div>
+      </form>
+    </div>
   </div>
   {% empty %}
-  <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 0;">
-    <h3 style="color: var(--text-secondary);">Nenhum produto encontrado.</h3>
-    <p style="color: var(--text-secondary);">Nossa coleção está sendo preparada. Volte em breve!</p>
+  <div class="no-products-message" style="grid-column: 1 / -1; text-align: center; padding: 4rem 0;">
+      <h3>Nossas coleções estão sendo cuidadosamente selecionadas.</h3>
+      <p>Em breve, você encontrará peças exclusivas para renovar seu guarda-roupa.</p>
   </div>
   {% endfor %}
 </div>

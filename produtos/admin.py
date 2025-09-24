@@ -1,22 +1,31 @@
+
 from django.contrib import admin
+
 from .models import Produto, VariacaoProduto
 
-# Inline para facilitar a adição de variações de produto diretamente na página do produto
+
 class VariacaoProdutoInline(admin.TabularInline):
+    """Permite a edição de variações de produto na página do produto."""
+
     model = VariacaoProduto
-    extra = 1 # Mostra 1 formulário extra por padrão
+    extra = 1
+
 
 @admin.register(Produto)
 class ProdutoAdmin(admin.ModelAdmin):
-    list_display = ('nome', 'preco', 'disponivel', 'criado_em', 'atualizado_em')
-    list_filter = ('disponivel', 'criado_em', 'atualizado_em')
-    list_editable = ('preco', 'disponivel')
-    prepopulated_fields = {'slug': ('nome',)}
+    """Configura a interface de administração para o modelo Produto."""
+
+    list_display = ("nome", "preco", "destaque", "slug")
+    list_filter = ("destaque",)
+    list_editable = ("preco", "destaque")
+    prepopulated_fields = {"slug": ("nome",)}
     inlines = [VariacaoProdutoInline]
 
-# Opcional: registrar VariacaoProduto separadamente se quiser um gerenciamento mais detalhado
+
 @admin.register(VariacaoProduto)
 class VariacaoProdutoAdmin(admin.ModelAdmin):
-    list_display = ('produto', 'tamanho', 'estoque')
-    list_filter = ('tamanho', 'produto__nome')
-    search_fields = ('produto__nome',)
+    """Configura a interface de administração para o modelo VariacaoProduto."""
+
+    list_display = ("produto", "tamanho", "estoque")
+    list_filter = ("tamanho", "produto__nome")
+    search_fields = ("produto__nome",)

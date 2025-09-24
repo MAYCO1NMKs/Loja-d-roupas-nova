@@ -71,29 +71,29 @@
 }
 
 .btn-primary-custom {
-    background-color: #007bff;
+    background-color: #ffffff;
     color: white;
 }
 
 .btn-primary-custom:hover {
-    background-color: #0056b3;
+    background-color: #000000;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+    box-shadow: 0 4px 12px rgb(0, 0, 0);
 }
 
 .btn-secondary-custom {
-    background-color: #6c757d;
+    background-color: #ffffff;
     color: white;
 }
 
 .btn-secondary-custom:hover {
     background-color: #5a6268;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.2);
+    box-shadow: 0 4px 12px rgb(2, 25, 45);
 }
 
 .footer-text {
     margin-top: 30px;
     font-size: 14px;
-    color: #888;
+    color: #ffffff;
 }

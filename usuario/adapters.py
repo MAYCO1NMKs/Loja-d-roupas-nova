@@ -2,5 +2,5 @@ from allauth.account.adapter import DefaultAccountAdapter
 
 class MyAccountAdapter(DefaultAccountAdapter):
 
-    def get_login_redirect_url(self, request):
-        return '/usuario/profile/'
+    def is_open_for_signup(self, request):
+        return True
