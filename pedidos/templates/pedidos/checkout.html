@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}Finalizar Compra - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Finalizar Compra</h1>
+    
+    <form action="{% url 'pedidos:criar_pedido' %}" method="post">
+        {% csrf_token %}
+        <div class="row">
+            <!-- Coluna de Dados do Cliente e Pagamento -->
+            <div class="col-lg-7">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Dados Pessoais</h4>
+                    </div>
+                    <div class="card-body">
+                        {% for field in form.visible_fields %}
+                            {% if field.name != 'metodo_pagamento' %}
+                                <div class="mb-3">
+                                    {{ field.label_tag }}
+                                    {{ field }}
+                                    {% if field.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ field.errors.as_text }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Método de Pagamento</h4>
+                    </div>
+                    <div class="card-body">
+                        <div id="div_id_metodo_pagamento">
+                            {% for radio in form.metodo_pagamento %}
+                                <div class="form-check">
+                                    {{ radio.tag }}
+                                    <label class="form-check-label" for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                         {% if form.metodo_pagamento.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.metodo_pagamento.errors.as_text }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coluna de Resumo do Pedido -->
+            <div class="col-lg-5">
+                <div class="card sticky-top" style="top: 20px;">
+                    <div class="card-header">
+                        <h4>Resumo do Pedido</h4>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            {% for item in carrinho.itens.all %}
+                            <li class="list-group-item d-flex">
+                                <img src="{{ item.variacao.produto.imagem.url }}" alt="{{ item.variacao.produto.nome }}" class="img-thumbnail me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                                <div class="flex-grow-1">
+                                    <a href="{{ item.variacao.produto.get_absolute_url }}" class="text-decoration-none text-dark fw-bold">{{ item.variacao.produto.nome }}</a>
+                                    <small class="text-muted d-block">{{ item.variacao }}</small>
+                                    <span class="fw-light">{{ item.quantidade }} x R$ {{ item.variacao.produto.get_preco_promocional|floatformat:2 }}</span>
+                                </div>
+                                <span class="fw-bold">R$ {{ item.get_subtotal|floatformat:2 }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        <ul class="list-group list-group-flush mt-3">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>Subtotal</span>
+                                <span>R$ {{ carrinho.get_total_price|floatformat:2 }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>Frete</span>
+                                <span class="text-success">Grátis</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center fw-bold fs-5">
+                                <strong>Total</strong>
+                                <strong>R$ {{ carrinho.get_total_price|floatformat:2 }}</strong>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-footer border-0 bg-white p-3">
+                        <button type="submit" class="btn btn-success btn-lg w-100">Finalizar Compra</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

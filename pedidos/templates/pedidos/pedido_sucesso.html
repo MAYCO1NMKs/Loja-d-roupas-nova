@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Pedido Realizado com Sucesso - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h1 class="card-title text-success">✓ Pedido Realizado com Sucesso!</h1>
+                    <p class="card-text">Obrigado pela sua compra! O seu pedido <strong>#{{ pedido.id }}</strong> foi recebido e está a ser processado.</p>
+                    
+                    <div class="mt-4">
+                        <h3>Resumo do Pedido</h3>
+                        <ul class="list-group list-group-flush">
+                            {% for item in pedido.itens.all %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    {{ item.variacao.produto.nome }}
+                                    <small class="text-muted d-block">{{ item.variacao }}</small>
+                                </div>
+                                <span>{{ item.quantidade }} x R$ {{ item.preco|floatformat:2 }}</span>
+                            </li>
+                            {% endfor %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center font-weight-bold">
+                                <strong>Total</strong>
+                                <strong>R$ {{ pedido.total|floatformat:2 }}</strong>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="{% url 'home' %}" class="btn btn-primary">Continuar a Comprar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

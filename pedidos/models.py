@@ -1,59 +1,48 @@
-
-from django.conf import settings
+# pedidos/models.py
 from django.db import models
-
-from produtos.models import Produto
-
-# Opções de status para um pedido
-STATUS_PEDIDO = (
-    ("Pendente", "Pendente"),
-    ("Processando", "Processando"),
-    ("Enviado", "Enviado"),
-    ("Entregue", "Entregue"),
-    ("Cancelado", "Cancelado"),
-)
-
+from django.conf import settings
+from produtos.models import VariacaoProduto
 
 class Pedido(models.Model):
-    """Representa um pedido de um usuário."""
-
-    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="pedidos")
-    criado_em = models.DateTimeField(auto_now_add=True)
-    atualizado_em = models.DateTimeField(auto_now=True)
-    status = models.CharField(
-        max_length=50, choices=STATUS_PEDIDO, default="Pendente"
+    STATUS_CHOICES = (
+        ('pendente', 'Pendente'),
+        ('processando', 'Processando'),
+        ('enviado', 'Enviado'),
+        ('entregue', 'Entregue'),
+        ('cancelado', 'Cancelado'),
+    )
+    METODO_PAGAMENTO_CHOICES = (
+        ('pix', 'Pix'),
+        ('cartao', 'Cartão de Crédito/Débito'),
     )
 
-    class Meta:
-        verbose_name = "Pedido"
-        verbose_name_plural = "Pedidos"
-        ordering = ("-criado_em",)
+    # Dados do Pedido
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
+    id_sessao = models.CharField(max_length=32, null=True, blank=True)
+    total = models.DecimalField(max_digits=10, decimal_places=2)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pendente')
+    criado_em = models.DateTimeField(auto_now_add=True)
+    atualizado_em = models.DateTimeField(auto_now=True)
+    
+    # Dados do Cliente
+    nome_cliente = models.CharField(max_length=100)
+    email_cliente = models.EmailField()
+    telefone_cliente = models.CharField(max_length=20)
+
+    # Dados do Pagamento
+    metodo_pagamento = models.CharField(max_length=20, choices=METODO_PAGAMENTO_CHOICES)
 
     def __str__(self):
-        return f"Pedido {self.id} de {self.usuario.username}"
-
-    @property
-    def get_total_pedido(self):
-        """Calcula o valor total do pedido."""
-        return sum(item.get_subtotal for item in self.itens.all())
-
+        return f"Pedido #{self.id} - {self.status}"
 
 class ItemPedido(models.Model):
-    """Representa um item dentro de um pedido."""
-
-    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name="itens")
-    produto = models.ForeignKey(Produto, on_delete=models.CASCADE, related_name="itens_pedido")
-    quantidade = models.PositiveIntegerField(default=1)
+    pedido = models.ForeignKey(Pedido, related_name='itens', on_delete=models.CASCADE)
+    variacao = models.ForeignKey(VariacaoProduto, on_delete=models.PROTECT)
+    quantidade = models.PositiveIntegerField()
     preco = models.DecimalField(max_digits=10, decimal_places=2)
 
-    class Meta:
-        verbose_name = "Item do Pedido"
-        verbose_name_plural = "Itens do Pedido"
-
     def __str__(self):
-        return f"{self.quantidade} x {self.produto.nome}"
+        return f"{self.quantidade}x {self.variacao.produto.nome} ({self.variacao.get_tamanho_display()})"
 
-    @property
     def get_subtotal(self):
-        """Calcula o subtotal de um item do pedido."""
         return self.quantidade * self.preco

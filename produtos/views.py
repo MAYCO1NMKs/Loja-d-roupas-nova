@@ -7,10 +7,10 @@ def home_view(request):
     """
     Exibe a página inicial com produtos em destaque que têm estoque.
     """
-    # Filtra produtos em destaque com estoque.
+    # Filtra produtos em destaque com estoque, limitado a 4.
     produtos_destaque = Produto.objects.filter(
         destaque=True, variacoes__estoque__gt=0
-    ).distinct()[:3]
+    ).distinct()[:4]
     context = {"produtos": produtos_destaque}
     return render(request, "home.html", context)
 

@@ -1,87 +1,73 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}StyleMen - O Estilo Define o Homem{% endblock %}
+{% block title %}StyleMen - Moda Masculina com Atitude{% endblock %}
 
 {% block extra_head %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-<link rel="stylesheet" href="{% static 'css/home.css' %}">
-<link rel="stylesheet" href="{% static 'css/featured_products.css' %}">
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="{% static 'css/featured_products.css' %}">
 {% endblock %}
 
 {% block content %}
 <!-- Seção Hero com Imagem de Banner -->
-<section class="hero-section text-center py-5">
-  <div class="container">
-    <h1 class="display-4 fw-bold text-white">StyleMen: O Estilo Define o Homem</h1>
-    <p class="lead text-white">Descubra peças essenciais que combinam qualidade, conforto e design moderno. Para o homem que sabe que o estilo é uma forma de expressão.</p>
-    <a href="{% url 'produtos:lista_colecoes' %}" class="btn btn-light btn-lg">Explorar Coleção</a>
-  </div>
+<section class="hero-section">
+    <div class="hero-content">
+        <h1>Estilo que Define Você</h1>
+        <p>Encontre peças exclusivas que marcam presença e definem seu estilo. Qualidade e design em cada detalhe.</p>
+        <a href="{% url 'produtos:lista_colecoes' %}" class="btn btn-light btn-lg">Explorar Coleção</a>
+    </div>
 </section>
 
 <!-- Seção de Produtos em Destaque -->
-<div class="container py-5">
-  <div class="text-center mb-5">
-    <h2 class="display-5 fw-bold">Produtos em Destaque</h2>
-    <p class="lead text-muted">As peças mais estilosas, selecionadas para você.</p>
-  </div>
-
-  <div class="row g-4">
-    {% for produto in produtos %}
-    <div class="col-md-3">
-      <div class="card h-100 shadow-sm">
-        <a href="{% url 'produtos:detalhe_produto' id=produto.id slug=produto.slug %}">
-          {% if produto.imagem %}
-            <img src="{{ produto.imagem.url }}" class="card-img-top" alt="{{ produto.nome }}">
-          {% else %}
-            <img src="https://via.placeholder.com/400x400.png/001f3f/FFFFFF?text=StyleMen" class="card-img-top" alt="Imagem Padrão">
-          {% endif %}
-        </a>
-        <div class="card-body text-center">
-          <h5 class="card-title">{{ produto.nome }}</h5>
-          <p class="card-text fw-bold">R$ {{ produto.preco|floatformat:2 }}</p>
-          
-          <form action="{% url 'carrinho:adicionar_ao_carrinho' produto.id %}" method="post">
-            {% csrf_token %}
-            <div class="mb-3">
-              <label for="tamanho-{{ produto.id }}" class="form-label">Tamanho:</label>
-              <select name="variacao_id" id="tamanho-{{ produto.id }}" class="form-select" required>
-                <option value="" disabled selected>Selecione</option>
-                {% for variacao in produto.variacoes.all %}
-                  {% if variacao.estoque > 0 %}
-                    <option value="{{ variacao.id }}">{{ variacao.get_tamanho_display }}</option>
-                  {% endif %}
-                {% endfor %}
-              </select>
-            </div>
-            <div class="d-grid gap-2">
-              <button type="submit" class="btn btn-primary">Adicionar ao Carrinho</button>
-              <a href="{% url 'produtos:detalhe_produto' id=produto.id slug=produto.slug %}" class="btn btn-secondary">Ver Detalhes</a>
-              <button type="submit" formaction="{% url 'pedidos:checkout' %}" class="btn btn-success">Comprar</button>
-            </div>
-          </form>
-
-        </div>
-      </div>
-    </div>
-    {% empty %}
-    <div class="col">
-        <p class="text-center">Nenhum produto em destaque no momento.</p>
-    </div>
-    {% endfor %}
-  </div>
+<div class="page-header">
+    <h2>Produtos em Destaque</h2>
+    <p>Uma seleção especial das peças mais desejadas da estação.</p>
 </div>
 
-<!-- Seção "Sobre Nós" -->
-<section class="about-section bg-light py-5">
-  <div class="container text-center">
-    <h2 class="display-5 fw-bold">Sobre a StyleMen</h2>
-    <p class="lead text-muted">Acreditamos que a moda é uma extensão da personalidade. Nossas coleções são criadas para o homem moderno que valoriza a autenticidade e o bom gosto. Cada peça é uma declaração de estilo e qualidade.</p>
-    <div class="d-flex justify-content-center gap-4 mt-4">
-      <a href="#" class="text-dark"><i class="fab fa-instagram fa-2x"></i></a>
-      <a href="#" class="text-dark"><i class="fab fa-facebook-f fa-2x"></i></a>
-      <a href="#" class="text-dark"><i class="fab fa-twitter fa-2x"></i></a>
-    </div>
-  </div>
-</section>
+<div class="featured-product-grid">
+    {% for produto in produtos %}
+        <div class="product-card-featured">
+            <a href="{% url 'produtos:detalhe_produto' id=produto.id slug=produto.slug %}">
+                <div class="product-image-container">
+                    {% if produto.imagem %}
+                        <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" class="product-image">
+                    {% else %}
+                        <img src="https://via.placeholder.com/400x550.png/001f3f/FFFFFF?text=StyleMen" alt="Imagem Padrão" class="product-image">
+                    {% endif %}
+                </div>
+            </a>
+            <div class="product-info">
+                <a href="{% url 'produtos:detalhe_produto' id=produto.id slug=produto.slug %}" style="text-decoration: none; color: inherit;">
+                    <h3 class="product-title">{{ produto.nome }}</h3>
+                </a>
+                <p class="product-price">R$ {{ produto.preco|floatformat:2 }}</p>
+                
+                <!-- Formulário para adicionar ao carrinho com a ação corrigida -->
+                <form action="{% url 'carrinho:adicionar_ao_carrinho' produto.id %}" method="post" class="cart-form">
+                    {% csrf_token %}
+                    <div class="size-selector">
+                        <label for="variacao-{{ produto.id }}">Tamanho:</label>
+                        <select name="variacao_id" id="variacao-{{ produto.id }}" class="form-control">
+                            {% for variacao in produto.variacoes.all %}
+                                {% if variacao.estoque > 0 %}
+                                    <option value="{{ variacao.id }}">{{ variacao.tamanho }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="product-actions">
+                        <button type="submit" class="btn btn-primary">Adicionar ao Carrinho</button>
+                        <a href="{% url 'produtos:detalhe_produto' id=produto.id slug=produto.slug %}" class="btn btn-secondary">Ver Detalhes</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    {% empty %}
+        <div class="no-products-message">
+            <h3>Nenhuma peça em destaque no momento.</h3>
+            <p>Nossos curadores de estilo estão trabalhando para trazer o melhor para você. Volte em breve!</p>
+        </div>
+    {% endfor %}
+</div>
+
 {% endblock %}

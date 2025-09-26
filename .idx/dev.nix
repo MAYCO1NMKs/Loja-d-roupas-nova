@@ -2,10 +2,11 @@
   # Usa o canal estável do Nix
   channel = "stable-24.05";
 
-  # Instala o Python e o pip usando o Nix
+  # Instala o Python, o pip e o Django usando o Nix
   packages = [
-    pkgs.python3
-    pkgs.pip
+    pkgs.python3,
+    pkgs.pip,
+    pkgs.django  # Adicionado para garantir que o Django esteja disponível
   ];
 
   # Variáveis de ambiente para o Django

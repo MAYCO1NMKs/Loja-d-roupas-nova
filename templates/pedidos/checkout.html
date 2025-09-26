@@ -1,51 +1,67 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load static %}
 
 {% block title %}Finalizar Compra - D Roupas-Nova{% endblock %}
 
 {% block extra_head %}
+{# Reutilizando o CSS do carrinho para manter a consistência #}
 <link rel="stylesheet" href="{% static 'css/carrinho.css' %}">
-<link rel="stylesheet" href="{% static 'css/checkout.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="checkout-container">
-    <div class="page-header">
-        <h2>Finalizar Compra</h2>
-        <p>Preencha seus dados para completar o pedido. Estamos quase lá!</p>
-    </div>
-
-    <div class="checkout-content">
-        <!-- Coluna do Formulário -->
-        <div class="form-column">
-            <h3>Endereço de Entrega</h3>
-            <form action="." method="post" class="checkout-form">
-                {% csrf_token %}
-                
-                {{ form.as_p }}
-
-                <button type-="submit" class="btn btn-primary btn-block">Finalizar Pedido e Pagar</button>
-            </form>
-        </div>
-
-        <!-- Coluna do Resumo do Pedido -->
-        <div class="summary-column">
-            <div class="order-summary-card">
-                <h3>Resumo do Pedido</h3>
-                <ul class="item-list">
-                    {% for item in carrinho %}
-                        <li class="summary-item">
-                            <span class="item-name">{{ item.quantidade }} x {{ item.produto.nome }}</span>
-                            <span class="item-price">R$ {{ item.total_preco|floatformat:2 }}</span>
-                        </li>
-                    {% endfor %}
-                </ul>
-                <div class="summary-total">
-                    <strong>Total do Pedido:</strong>
-                    <strong>R$ {{ carrinho.get_total_preco|floatformat:2 }}</strong>
-                </div>
-            </div>
-        </div>
-    </div>
+<div class="page-header">
+  <h1>Finalizar Compra</h1>
 </div>
+
+<div class="cart-layout">
+  
+  <!-- Coluna da Esquerda: Itens do Pedido -->
+  <div class="cart-items">
+    <h2>Itens do seu Pedido</h2>
+    {% for item in carrinho.itens.all %}
+      {% with produto=item.variacao.produto %}
+      <div class="cart-item">
+        <div class="cart-item-image">
+          <a href="{{ produto.get_absolute_url }}">
+            {% if produto.imagem %}
+              <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}">
+            {% else %}
+              <img src="https://via.placeholder.com/100x100.png/1E1E1E/B3B3B3?text=ShopModerno" alt="Imagem Padrão">
+            {% endif %}
+          </a>
+        </div>
+        <div class="cart-item-details">
+          <a href="{{ produto.get_absolute_url }}"><h4>{{ produto.nome }} ({{ item.variacao.tamanho }})</h4></a>
+          <p>Quantidade: {{ item.quantidade }}</p>
+          <p class="price">R$ {{ item.preco|floatformat:2 }}</p>
+        </div>
+        <div class="cart-item-total">
+          <p>R$ {{ item.get_total_price|floatformat:2 }}</p>
+        </div>
+      </div>
+      {% endwith %}
+    {% endfor %}
+  </div>
+
+  <!-- Coluna da Direita: Resumo do Pedido e Ação -->
+  <div class="cart-summary">
+    <h3>Resumo da Compra</h3>
+    <div class="summary-row">
+      <span>Subtotal</span>
+      <span>R$ {{ carrinho.get_total_price|floatformat:2 }}</span>
+    </div>
+    <div class="summary-row">
+      <span>Frete</span>
+      <span>Grátis</span>
+    </div>
+    <div class="summary-total">
+      <span>Total</span>
+      <span>R$ {{ carrinho.get_total_price|floatformat:2 }}</span>
+    </div>
+    {# O formulário de confirmação do pedido será adicionado aqui no futuro #}
+    <a href="#" class="btn btn-primary btn-block">Confirmar Pedido</a>
+  </div>
+
+</div>
+
 {% endblock %}

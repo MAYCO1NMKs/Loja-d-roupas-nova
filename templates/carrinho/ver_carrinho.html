@@ -33,10 +33,11 @@
             <a href="{{ produto.get_absolute_url }}"><h4>{{ produto.nome }} ({{ item.variacao.tamanho }})</h4></a>
             <p class="price">R$ {{ item.preco|floatformat:2 }}</p>
 
-            <!-- Formulário de atualização de quantidade -->
+            <!-- Formulário de atualização de quantidade com o campo override -->
             <form action="{% url 'carrinho:adicionar_ao_carrinho' produto.id %}" method="post" class="form-update-quantity">
                 {% csrf_token %}
                 <input type="hidden" name="variacao_id" value="{{ item.variacao.id }}">
+                <input type="hidden" name="override" value="True">
                 <input type="number" name="quantidade" value="{{ item.quantidade }}" min="1" class="input-quantity">
                 <button type="submit" class="btn btn-secondary btn-sm">Atualizar</button>
             </form>
@@ -67,7 +68,7 @@
         <span>Total</span>
         <span>R$ {{ carrinho.get_total_price|floatformat:2 }}</span>
       </div>
-      <a href="#" class="btn btn-primary btn-block">Finalizar Compra</a>
+      <a href="{% url 'pedidos:checkout' %}" class="btn btn-primary btn-block">Finalizar Compra</a>
     </div>
 
   </div>

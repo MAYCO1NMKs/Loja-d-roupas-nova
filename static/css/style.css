@@ -89,7 +89,7 @@ body {
     border: none;
     border-radius: 10px;
     background: linear-gradient(to right, #ffffff, #ffffff);
-    color: #fff;
+    color: #000;
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
     margin-top: 1rem;
@@ -98,4 +98,9 @@ body {
 .btn-lg:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Correção para o botão "Explorar Coleção" */
+.hero-section .btn.btn-light {
+    color: #000000 !important;
 }

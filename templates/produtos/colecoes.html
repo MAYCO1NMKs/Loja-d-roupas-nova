@@ -1,52 +1,72 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Coleções em Destaque - D Roupas-Nova{% endblock %}
+{% block title %}Coleções - D Roupas-Nova{% endblock %}
 
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
+{# Adicionando o CSS do formulário do produto em destaque #}
+<link rel="stylesheet" href="{% static 'css/featured_products.css' %}">
 {% endblock %}
 
 {% block content %}
 <!-- Seção Hero com Imagem de Banner -->
 <section class="hero-section">
   <div class="hero-content">
-    <h1>Coleções em Destaque</h1>
-    <p>Uma seleção especial das peças mais estilosas e desejadas da estação. Looks que definem tendências.</p>
+    <h1>Nossas Coleções</h1>
+    <p>Uma seleção completa das peças mais estilosas e desejadas. Looks que definem tendências para todas as ocasiões.</p>
   </div>
 </section>
 
-<!-- Seção de Produtos em Destaque -->
+<!-- Seção de Produtos -->
 <div class="page-header">
-  <h2>As Peças Mais Estilosas</h2>
+  <h2>Todas as Peças</h2>
   <p>Qualidade e design que você percebe no primeiro toque.</p>
 </div>
 
-<div class="product-grid">
+{# Usando a mesma classe de grid da página inicial para consistência #}
+<div class="featured-product-grid">
   {% for produto in produtos %}
-  <div class="product-card">
-    <!-- Link envolvendo a imagem -->
-    <a href="{% url 'produtos:detalhe_produto' id=produto.id slug=produto.slug %}">
-      <div class="product-image-container">
-        {% if produto.imagem %}
-          <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" class="product-image">
-        {% else %}
-          <img src="https://via.placeholder.com/400x400.png/001f3f/FFFFFF?text=StyleMen" alt="Imagem Padrão" class="product-image">
-        {% endif %}
-      </div>
-    </a>
-    <div class="product-info">
-      <!-- Link envolvendo o título -->
-      <a href="{% url 'produtos:detalhe_produto' id=produto.id slug=produto.slug %}" style="text-decoration: none; color: inherit;">
-        <h3 class="product-title">{{ produto.nome }}</h3>
+  {# Usando o card de produto da página inicial que já tem o formulário #}
+  <div class="product-card-featured">
+      <a href="{% url 'produtos:detalhe_produto' id=produto.id slug=produto.slug %}">
+          <div class="product-image-container">
+              {% if produto.imagem %}
+                  <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" class="product-image">
+              {% else %}
+                  <img src="https://via.placeholder.com/400x550.png/001f3f/FFFFFF?text=StyleMen" alt="Imagem Padrão" class="product-image">
+              {% endif %}
+          </div>
       </a>
-      <p class="product-price">R$ {{ produto.preco|floatformat:2 }}</p>
-      <a href="{% url 'produtos:detalhe_produto' id=produto.id slug=produto.slug %}" class="btn">Ver Opções</a>
-    </div>
+      <div class="product-info">
+          <a href="{% url 'produtos:detalhe_produto' id=produto.id slug=produto.slug %}" style="text-decoration: none; color: inherit;">
+              <h3 class="product-title">{{ produto.nome }}</h3>
+          </a>
+          <p class="product-price">R$ {{ produto.preco|floatformat:2 }}</p>
+          
+          <!-- Formulário para adicionar ao carrinho -->
+          <form action="{% url 'carrinho:adicionar_ao_carrinho' produto.id %}" method="post" class="cart-form">
+              {% csrf_token %}
+              <div class="size-selector">
+                  <label for="variacao-{{ produto.id }}">Tamanho:</label>
+                  <select name="variacao_id" id="variacao-{{ produto.id }}" class="form-control">
+                      {% for variacao in produto.variacoes.all %}
+                          {% if variacao.estoque > 0 %}
+                              <option value="{{ variacao.id }}">{{ variacao.tamanho }}</option>
+                          {% endif %}
+                      {% endfor %}
+                  </select>
+              </div>
+              <div class="product-actions">
+                  <button type="submit" class="btn btn-primary">Adicionar ao Carrinho</button>
+                  <a href="{% url 'produtos:detalhe_produto' id=produto.id slug=produto.slug %}" class="btn btn-secondary">Ver Detalhes</a>
+              </div>
+          </form>
+      </div>
   </div>
   {% empty %}
   <div class="no-products-message">
-      <h3>Nenhuma peça em destaque no momento.</h3>
+      <h3>Nenhuma peça disponível no momento.</h3>
       <p>Nossos curadores de estilo estão trabalhando para trazer o melhor para você. Volte em breve!</p>
   </div>
   {% endfor %}

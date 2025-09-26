@@ -9,7 +9,8 @@ class ItemPedidoInline(admin.TabularInline):
 
     model = ItemPedido
     extra = 0
-    readonly_fields = ("produto", "quantidade", "preco")
+    # Corrigido: Acessando o produto através da variação
+    readonly_fields = ("variacao", "quantidade", "preco") 
     can_delete = False
 
 
@@ -17,27 +18,20 @@ class ItemPedidoInline(admin.TabularInline):
 class PedidoAdmin(admin.ModelAdmin):
     """Configuração do admin para o modelo de Pedido."""
 
-    list_display = ("id", "usuario", "get_total_pedido", "criado_em", "status")
+    list_display = ("id", "usuario", "total", "criado_em", "status")
     list_filter = ("status", "criado_em")
     search_fields = ("id", "usuario__username")
     inlines = [ItemPedidoInline]
     readonly_fields = ("usuario", "criado_em", "atualizado_em")
-
-    def get_total_pedido(self, obj):
-        return f"R$ {obj.get_total_pedido:.2f}"
-
-    get_total_pedido.short_description = "Total do Pedido"
 
 
 @admin.register(ItemPedido)
 class ItemPedidoAdmin(admin.ModelAdmin):
     """Configuração do admin para o modelo de ItemPedido."""
 
-    list_display = ("pedido", "produto", "quantidade", "preco", "get_subtotal")
+    # Corrigido: Acessando o nome do produto através da variação
+    list_display = ("pedido", "variacao", "quantidade", "preco", "get_subtotal")
     list_filter = ("pedido__status",)
-    search_fields = ("pedido__id", "produto__nome")
+    # Corrigido: Acessando o nome do produto através da variação para a busca
+    search_fields = ("pedido__id", "variacao__produto__nome")
 
-    def get_subtotal(self, obj):
-        return f"R$ {obj.get_subtotal:.2f}"
-
-    get_subtotal.short_description = "Subtotal"

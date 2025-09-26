@@ -1,67 +1,105 @@
-
-from django.contrib.auth.decorators import login_required
-from django.db import transaction
-from django.shortcuts import get_object_or_404, redirect, render
-
+# pedidos/views.py
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from carrinho.views import get_carrinho
+from .models import Pedido, ItemPedido
+from .forms import CheckoutForm # Importa o novo formulário
 
-from .forms import FormularioPedido
-from .models import ItemPedido, Pedido
-
-
-@login_required
 def checkout(request):
-    """Processa o checkout, coletando os dados do cliente e criando o pedido."""
+    """Exibe a página de checkout com o formulário de dados do cliente."""
+    carrinho = get_carrinho(request)
+    
+    if not carrinho.itens.exists():
+        return redirect('carrinho:ver_carrinho')
+
+    # Preenche o formulário com dados do usuário, se estiver logado
+    initial_data = {}
+    if request.user.is_authenticated:
+        initial_data = {
+            'nome_cliente': request.user.get_full_name() or request.user.username,
+            'email_cliente': request.user.email,
+        }
+
+    form = CheckoutForm(initial=initial_data)
+
+    contexto = {
+        'carrinho': carrinho,
+        'form': form,
+    }
+    return render(request, 'pedidos/checkout.html', contexto)
+
+
+def criar_pedido(request):
+    """Cria um pedido a partir do carrinho e dos dados do formulário de checkout."""
+    if request.method != 'POST':
+        return redirect('pedidos:checkout')
+
     carrinho = get_carrinho(request)
     if not carrinho.itens.exists():
-        return redirect("carrinho:ver_carrinho")
+        return redirect('carrinho:ver_carrinho')
 
-    if request.method == "POST":
-        form = FormularioPedido(request.POST)
-        if form.is_valid():
-            try:
-                with transaction.atomic():
-                    pedido = Pedido.objects.create(usuario=request.user)
+    form = CheckoutForm(request.POST)
 
-                    itens_pedido = []
-                    for item in carrinho.itens.all():
-                        itens_pedido.append(
-                            ItemPedido(
-                                pedido=pedido,
-                                produto=item.produto,
-                                preco=item.produto.preco,
-                                quantidade=item.quantidade,
-                            )
-                        )
+    if form.is_valid():
+        # Se o formulário é válido, cria o pedido mas não salva ainda (commit=False)
+        pedido = form.save(commit=False)
+        pedido.total = carrinho.get_total_price()
 
-                    ItemPedido.objects.bulk_create(itens_pedido)
-                    carrinho.itens.all().delete()
+        # Associa o usuário ou a sessão ao pedido
+        if request.user.is_authenticated:
+            pedido.usuario = request.user
+        else:
+            pedido.id_sessao = request.session.session_key
+        
+        # Agora salva o pedido no banco de dados
+        pedido.save()
 
-                    return redirect("pedidos:pedido_confirmado", pedido_id=pedido.id)
+        # Cria os Itens do Pedido
+        for item_carrinho in carrinho.itens.all():
+            ItemPedido.objects.create(
+                pedido=pedido,
+                variacao=item_carrinho.variacao,
+                quantidade=item_carrinho.quantidade,
+                preco=item_carrinho.variacao.produto.get_preco_promocional() # Preço no momento da compra
+            )
 
-            except Exception as e:
-                # Adicionar lógica para lidar com o erro, como logging
-                print(f"Erro no checkout: {e}")
-                # Considerar adicionar uma mensagem de erro para o usuário
-                return redirect("carrinho:ver_carrinho")
+        # Guarda o ID do pedido na sessão para a página de sucesso
+        request.session['id_pedido'] = pedido.id
+
+        # Limpa o carrinho
+        carrinho.delete()
+
+        # Redireciona para a página de sucesso
+        return redirect(reverse('pedidos:pedido_sucesso'))
     else:
-        form = FormularioPedido()
-
-    context = {"carrinho": carrinho, "form": form}
-    return render(request, "pedidos/checkout.html", context)
-
-
-@login_required
-def pedido_confirmado(request, pedido_id):
-    """Mostra a página de confirmação de que um pedido foi realizado com sucesso."""
-    pedido = get_object_or_404(Pedido, id=pedido_id, usuario=request.user)
-    context = {"pedido": pedido}
-    return render(request, "pedidos/pedido_confirmado.html", context)
+        # Se o formulário for inválido, re-renderiza a página de checkout com os erros
+        contexto = {
+            'carrinho': carrinho,
+            'form': form,
+        }
+        return render(request, 'pedidos/checkout.html', contexto)
 
 
-@login_required
-def historico_pedidos(request):
-    """Exibe o histórico de pedidos do usuário logado."""
-    pedidos = Pedido.objects.filter(usuario=request.user).order_by("-criado_em")
-    context = {"pedidos": pedidos}
-    return render(request, "pedidos/historico_pedidos.html", context)
+def pedido_sucesso(request):
+    """Exibe a página de confirmação de pedido bem-sucedido."""
+    id_pedido = request.session.get('id_pedido')
+    if not id_pedido:
+        return redirect('home')
+    
+    pedido = get_object_or_404(Pedido, id=id_pedido)
+
+    # Medida de segurança para garantir que o cliente só veja seu próprio pedido
+    is_owner = (pedido.usuario and pedido.usuario == request.user) or \
+               (pedido.id_sessao and pedido.id_sessao == request.session.session_key)
+
+    if not is_owner:
+        return redirect('home')
+
+    # Limpa o id_pedido da sessão após o uso
+    if 'id_pedido' in request.session:
+        del request.session['id_pedido']
+        
+    contexto = {
+        'pedido': pedido
+    }
+    return render(request, 'pedidos/pedido_sucesso.html', contexto)
