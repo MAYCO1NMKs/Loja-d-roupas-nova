@@ -1,96 +1,70 @@
-/* Estilo para a Seção Hero */
-.hero-section {
+/* Hero Section */
+.hero {
     position: relative;
-    height: 60vh; /* Altura da seção hero */
-    background: url('https://images.unsplash.com/photo-1593030103062-758912169ab3?q=80&w=1974&auto=format&fit=crop') no-repeat center center/cover;
+    height: 70vh;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    color: #000000;
+    color: white;
+    background: url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=2574&auto=format&fit=crop') no-repeat center center/cover;
+    overflow: hidden;
 }
 
-.hero-section::before {
+.hero::after {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5); /* Sobreposição escura para legibilidade */
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 1;
 }
 
 .hero-content {
-    position: relative; /* Garante que o conteúdo fique sobre a sobreposição */
-    z-index: 1;
-    max-width: 800px; /* Largura máxima do conteúdo */
-    padding: 0 20px;
+    position: relative;
+    z-index: 2;
 }
 
-.hero-content h1 {
-    font-size: 3.5rem; /* Fonte maior para o título */
+.hero h1 {
+    font-size: 4.5rem;
     font-weight: 600;
-    margin-bottom: 0.5rem;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
 }
 
-.hero-content p {
-    font-size: 1.25rem; /* Fonte um pouco maior para a descrição */
+.hero p {
+    font-size: 1.25rem;
+    font-weight: 300;
     margin-bottom: 2rem;
 }
 
-.hero-content .btn-primary {
-    background-color: #001f3f; /* Azul Marinho */
-    border-color: #001f3f;
-    color: #fff;
+.btn-collection {
     padding: 12px 30px;
     font-size: 1.1rem;
     font-weight: 600;
-    border-radius: 5px;
-    transition: background-color 0.3s, transform 0.3s;
+    text-transform: uppercase;
+    border: 2px solid white;
+    background-color: transparent;
+    color: white;
+    transition: all 0.3s ease;
 }
 
-.hero-content .btn-primary:hover {
-    background-color: #003366; /* Azul Marinho mais claro */
-    transform: translateY(-2px); /* Efeito de elevação */
+.btn-collection:hover {
+    background-color: white;
+    color: black;
 }
 
-/* Estilo para o cabeçalho da página */
-.page-header {
+/* Seção de Produtos em Destaque */
+.featured-products-section {
+    padding: 5rem 0;
+}
+
+.featured-products-section h2 {
     text-align: center;
-    padding: 4rem 0 2rem;
-}
-
-.page-header h2 {
+    margin-bottom: 3rem;
+    font-weight: 300;
     font-size: 2.5rem;
-    font-weight: 600;
-    color: var(--text-primary, #333);
-    margin-bottom: 0.5rem;
-}
-
-.page-header p {
-    font-size: 1.1rem;
-    color: var(--text-secondary, #666);
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-/* Mensagem de "Sem Produtos" */
-.no-products-message {
-    grid-column: 1 / -1; /* Ocupa toda a largura do grid */
-    text-align: center;
-    padding: 4rem 2rem;
-    background-color: var(--light-gray, #f8f9fa);
-    border-radius: 8px;
-    margin: 2rem 0;
-}
-
-.no-products-message h3 {
-    font-size: 1.5rem;
-    color: var(--text-primary, #333);
-    font-weight: 600;
-}
-
-.no-products-message p {
-    color: var(--text-secondary, #666);
-    font-size: 1.1rem;
+    color: #333;
 }

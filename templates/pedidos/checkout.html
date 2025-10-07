@@ -1,67 +1,109 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Finalizar Compra - D Roupas-Nova{% endblock %}
+{% block title %}Finalizar Compra{% endblock %}
 
 {% block extra_head %}
-{# Reutilizando o CSS do carrinho para manter a consistência #}
-<link rel="stylesheet" href="{% static 'css/carrinho.css' %}">
+    <!-- CSS dedicado para a página de checkout -->
+    <link rel="stylesheet" href="{% static 'css/checkout.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
 {% endblock %}
 
 {% block content %}
-<div class="page-header">
-  <h1>Finalizar Compra</h1>
+<div class="container my-5">
+    <div class="checkout-header text-center mb-5">
+        <h1>Finalizar Compra</h1>
+        <p class="lead">Complete seus dados para finalizar o pedido.</p>
+    </div>
+
+    <div class="row g-5">
+        <!-- ======================= COLUNA ESQUERDA: FORMULÁRIOS ======================= -->
+        <div class="col-lg-7">
+            <div class="checkout-card card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title mb-4">Endereço de Entrega</h4>
+                    <!-- FORMULÁRIO DE ENDEREÇO (Estrutura de Exemplo) -->
+                    <form class="row g-3">
+                        <div class="col-12">
+                            <label for="fullName" class="form-label">Nome Completo</label>
+                            <input type="text" class="form-control" id="fullName" placeholder="Seu Nome Completo">
+                        </div>
+                        <div class="col-12">
+                            <label for="address" class="form-label">Endereço</label>
+                            <input type="text" class="form-control" id="address" placeholder="Rua, Número, Bairro">
+                        </div>
+                         <div class="col-md-6">
+                            <label for="cep" class="form-label">CEP</label>
+                            <input type="text" class="form-control" id="cep" placeholder="00000-000">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="city" class="form-label">Cidade</label>
+                            <input type="text" class="form-control" id="city">
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="checkout-card card shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title mb-4">Informações de Pagamento</h4>
+                     <!-- FORMULÁRIO DE PAGAMENTO (Estrutura de Exemplo) -->
+                    <form class="row g-3">
+                        <div class="col-12">
+                            <label for="cardName" class="form-label">Nome no Cartão</label>
+                            <input type="text" class="form-control" id="cardName">
+                        </div>
+                        <div class="col-12">
+                            <label for="cardNumber" class="form-label">Número do Cartão</label>
+                            <input type="text" class="form-control" id="cardNumber" placeholder="0000 0000 0000 0000">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ======================= COLUNA DIREITA: RESUMO DO PEDIDO ======================= -->
+        <div class="col-lg-5">
+            <div class="summary-card card shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title mb-4">Resumo do Pedido</h4>
+                    
+                    <ul class="list-group list-group-flush summary-items">
+                        {% for item in carrinho.itens.all %}
+                        {% with produto=item.variacao.produto %}
+                            <li class="list-group-item d-flex align-items-center">
+                                <img src="{% if produto.imagem %}{{ produto.imagem.url }}{% else %}https://via.placeholder.com/80{% endif %}" alt="{{ produto.nome }}" class="summary-item-img me-3">
+                                <div class="flex-grow-1">
+                                    <h6 class="my-0">{{ produto.nome }} ({{ item.variacao.tamanho }})</h6>
+                                    <small class="text-muted">Qtd: {{ item.quantidade }}</small>
+                                </div>
+                                <span class="fw-bold">R$ {{ item.get_total_price|floatformat:2 }}</span>
+                            </li>
+                        {% endwith %}
+                        {% endfor %}
+                    </ul>
+
+                    <ul class="list-group list-group-flush total-summary mt-3">
+                         <li class="list-group-item d-flex justify-content-between">
+                            <span>Subtotal</span>
+                            <span>R$ {{ carrinho.get_total_price|floatformat:2 }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Frete</span>
+                            <span class="text-success">Grátis</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between fw-bold fs-5 mt-2">
+                            <span>Total</span>
+                            <span>R$ {{ carrinho.get_total_price|floatformat:2 }}</span>
+                        </li>
+                    </ul>
+
+                    <div class="d-grid mt-4">
+                        <a href="#" class="btn btn-primary btn-lg">Confirmar Pedido</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-
-<div class="cart-layout">
-  
-  <!-- Coluna da Esquerda: Itens do Pedido -->
-  <div class="cart-items">
-    <h2>Itens do seu Pedido</h2>
-    {% for item in carrinho.itens.all %}
-      {% with produto=item.variacao.produto %}
-      <div class="cart-item">
-        <div class="cart-item-image">
-          <a href="{{ produto.get_absolute_url }}">
-            {% if produto.imagem %}
-              <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}">
-            {% else %}
-              <img src="https://via.placeholder.com/100x100.png/1E1E1E/B3B3B3?text=ShopModerno" alt="Imagem Padrão">
-            {% endif %}
-          </a>
-        </div>
-        <div class="cart-item-details">
-          <a href="{{ produto.get_absolute_url }}"><h4>{{ produto.nome }} ({{ item.variacao.tamanho }})</h4></a>
-          <p>Quantidade: {{ item.quantidade }}</p>
-          <p class="price">R$ {{ item.preco|floatformat:2 }}</p>
-        </div>
-        <div class="cart-item-total">
-          <p>R$ {{ item.get_total_price|floatformat:2 }}</p>
-        </div>
-      </div>
-      {% endwith %}
-    {% endfor %}
-  </div>
-
-  <!-- Coluna da Direita: Resumo do Pedido e Ação -->
-  <div class="cart-summary">
-    <h3>Resumo da Compra</h3>
-    <div class="summary-row">
-      <span>Subtotal</span>
-      <span>R$ {{ carrinho.get_total_price|floatformat:2 }}</span>
-    </div>
-    <div class="summary-row">
-      <span>Frete</span>
-      <span>Grátis</span>
-    </div>
-    <div class="summary-total">
-      <span>Total</span>
-      <span>R$ {{ carrinho.get_total_price|floatformat:2 }}</span>
-    </div>
-    {# O formulário de confirmação do pedido será adicionado aqui no futuro #}
-    <a href="#" class="btn btn-primary btn-block">Confirmar Pedido</a>
-  </div>
-
-</div>
-
 {% endblock %}

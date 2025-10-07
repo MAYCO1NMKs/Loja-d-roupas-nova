@@ -13,3 +13,4 @@ urlpatterns = [
     # Esta URL é para a página de detalhes de um produto específico.
     path('<int:id>/<slug:slug>/', detalhe_produto, name='detalhe_produto'),
 ]
+ 

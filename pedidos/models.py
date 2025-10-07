@@ -24,13 +24,13 @@ class Pedido(models.Model):
     criado_em = models.DateTimeField(auto_now_add=True)
     atualizado_em = models.DateTimeField(auto_now=True)
     
-    # Dados do Cliente
-    nome_cliente = models.CharField(max_length=100)
-    email_cliente = models.EmailField()
-    telefone_cliente = models.CharField(max_length=20)
+    # Dados do Cliente (permitindo nulos para pedidos antigos)
+    nome_cliente = models.CharField(max_length=100, null=True, blank=True)
+    email_cliente = models.EmailField(null=True, blank=True)
+    telefone_cliente = models.CharField(max_length=20, null=True, blank=True)
 
-    # Dados do Pagamento
-    metodo_pagamento = models.CharField(max_length=20, choices=METODO_PAGAMENTO_CHOICES)
+    # Dados do Pagamento (permitindo nulos para pedidos antigos)
+    metodo_pagamento = models.CharField(max_length=20, choices=METODO_PAGAMENTO_CHOICES, null=True, blank=True)
 
     def __str__(self):
         return f"Pedido #{self.id} - {self.status}"

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro Moderno</title>
+    <link rel="stylesheet" href="static/css/cadastro.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="form-container">
+        <form id="signup-form">
+            <h2>Crie sua Conta</h2>
+            <p>Junte-se a nós e comece sua jornada.</p>
+
+            <div class="form-field">
+                <input type="text" id="username" name="username" placeholder=" " required>
+                <label for="username">Nome de usuário</label>
+            </div>
+
+            <div class="form-field">
+                <input type="email" id="email" name="email" placeholder=" " required>
+                <label for="email">Email</label>
+            </div>
+
+            <div class="form-field">
+                <input type="password" id="password" name="password" placeholder=" " required>
+                <label for="password">Senha</label>
+            </div>
+
+            <!--
+            ============================================================
+            INTEGRAÇÃO JAVASCRIPT PARA VALIDAÇÃO DE SENHA
+            ============================================================
+            Adicione seu script aqui para as seguintes validações:
+            1. Validação em tempo real no campo 'password'.
+            2. Verificar se a senha tem pelo menos 8 caracteres.
+            3. Verificar se a senha contém pelo menos um caractere especial (ex: !@#$%^&*).
+            4. Exibir mensagens de erro/sucesso para o usuário.
+
+            Exemplo de captura de evento:
+            <script>
+                const passwordField = document.getElementById('password');
+                passwordField.addEventListener('input', (event) => {
+                    const password = event.target.value;
+                    // Sua lógica de validação aqui...
+                    console.log(password);
+                });
+            </script>
+            ============================================================
+            -->
+
+            <button type="submit" class="submit-btn">Inscrever-se</button>
+            <div class="form-footer">
+                <p>Já tem uma conta? <a href="#">Faça login</a></p>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

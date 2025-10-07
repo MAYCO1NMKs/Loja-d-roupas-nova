@@ -1,0 +1,115 @@
+/* --- Reset e Configurações Globais --- */
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: #121212; /* Fundo escuro */
+    color: #E0E0E0; /* Texto claro */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* --- Container do Formulário --- */
+.form-container {
+    background-color: #1E1E1E; /* Cor de fundo do card */
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); /* Sombra mais pronunciada */
+    width: 100%;
+    max-width: 450px;
+    text-align: center;
+}
+
+h2 {
+    font-size: 2.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #FFFFFF; /* Título principal branco */
+}
+
+p {
+    color: #A0A0A0; /* Texto secundário mais suave */
+    margin-bottom: 2rem;
+}
+
+/* --- Estilo dos Campos (Floating Labels) --- */
+.form-field {
+    position: relative;
+    margin-bottom: 1.8rem;
+}
+
+.form-field input {
+    width: 100%;
+    padding: 1rem 0.8rem;
+    background-color: transparent; /* Fundo transparente */
+    border: 2px solid #444; /* Borda sutil */
+    border-radius: 8px;
+    color: #E0E0E0;
+    font-size: 1rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    outline: none;
+}
+
+.form-field label {
+    position: absolute;
+    top: 50%;
+    left: 1rem;
+    transform: translateY(-50%);
+    color: #A0A0A0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    background-color: #1E1E1E; /* Cor de fundo para o efeito flutuante */
+    padding: 0 0.3rem;
+}
+
+/* Animação do label flutuante */
+.form-field input:focus + label,
+.form-field input:not(:placeholder-shown) + label {
+    top: 0;
+    left: 0.8rem;
+    font-size: 0.85rem;
+    color: #3498db; /* Cor do label quando focado */
+}
+
+.form-field input:focus {
+    border-color: #3498db; /* Cor da borda quando focado */
+    box-shadow: 0 0 8px rgba(52, 152, 219, 0.3); /* Sombra suave no foco */
+}
+
+/* --- Botão de Submissão --- */
+.submit-btn {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(90deg, #3498db, #8e44ad); /* Gradiente chamativo */
+    border: none;
+    border-radius: 8px;
+    color: #FFFFFF;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.3s;
+}
+
+.submit-btn:hover {
+    transform: translateY(-3px); /* Efeito de elevação */
+    box-shadow: 0 8px 20px rgba(52, 152, 219, 0.4); /* Sombra ao passar o mouse */
+}
+
+/* --- Rodapé do Formulário --- */
+.form-footer {
+    margin-top: 2rem;
+    font-size: 0.9rem;
+    color: #A0A0A0;
+}
+
+.form-footer a {
+    color: #3498db;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s;
+}
+
+.form-footer a:hover {
+    color: #5dade2;
+}

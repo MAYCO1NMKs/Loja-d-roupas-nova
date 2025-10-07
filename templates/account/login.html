@@ -2,72 +2,88 @@
 {% load i18n %}
 {% load static %}
 
-{% block title %}{% trans "Sign In" %}{% endblock %}
+{% block title %}{% trans "Entrar" %}{% endblock %}
 
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'css/account.css' %}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<style>
+  .card {
+    border-radius: 1rem;
+  }
+  .form-control-lg {
+    border-radius: 0.5rem;
+  }
+</style>
 {% endblock %}
 
 {% block content %}
 <div class="container my-5">
     <div class="row justify-content-center">
-        <div class="col-md-6">
+        <div class="col-md-6 col-lg-5">
             {% if messages %}
+                {% for message in messages %}
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {% for message in messages %}
-                        {{ message }}
-                    {% endfor %}
+                    {{ message }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
+                {% endfor %}
             {% endif %}
             <div class="card shadow-lg border-0">
-                <div class="card-body p-5">
+                <div class="card-body p-4 p-md-5">
                     <div class="text-center mb-4">
-                        <i class="fas fa-user-circle fa-4x text-primary"></i>
-                        <h2 class="card-title mt-3">{% trans "Welcome Back" %}</h2>
+                        <i class="fas fa-user-lock fa-4x text-primary"></i>
+                        <h2 class="card-title mt-3 fw-bold">Acesse sua Conta</h2>
+                        <p class="text-muted">Bem-vindo de volta! Por favor, insira seus dados.</p>
                     </div>
 
                     <form class="login" method="post" action="{% url 'account_login' %}">
                         {% csrf_token %}
                         
                         {% if form.non_field_errors %}
-                            <div class="alert alert-danger" role="alert">
-                                {{ form.non_field_errors }}
+                            <div class="alert alert-danger text-center" role="alert">
+                                {% for error in form.non_field_errors %}
+                                    <p class="mb-0">{{ error }}</p>
+                                {% endfor %}
                             </div>
                         {% endif %}
 
                         <div class="mb-3">
-                            <label for="id_login" class="form-label">{% trans "Username or Email" %}</label>
-                            {{ form.login }}
+                            <label for="id_login" class="form-label">Nome de usuário ou E-mail</label>
+                            <input type="text" name="login" class="form-control form-control-lg" id="id_login" required>
                         </div>
 
                         <div class="mb-3">
-                            <label for="id_password" class="form-label">{% trans "Password" %}</label>
-                            {{ form.password }}
+                           <label for="id_password" class="form-label">Senha</label>
+                           <input type="password" name="password" class="form-control form-control-lg" id="id_password" required>
                         </div>
                         
-                        <div class="form-check mb-3">
-                            {{ form.remember }}
-                            <label class="form-check-label" for="id_remember">
-                                {% trans "Remember Me" %}
-                            </label>
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div class="form-check">
+                                <input type="checkbox" name="remember" class="form-check-input" id="id_remember">
+                                <label class="form-check-label" for="id_remember">
+                                    Lembrar-me
+                                </label>
+                            </div>
+                            <a class="small text-decoration-none" href="{% url 'account_reset_password' %}">Esqueceu a senha?</a>
                         </div>
 
                         {% if redirect_field_value %}
                         <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
                         {% endif %}
-                        <div class="d-grid mt-4">
-                            <button class="btn btn-primary btn-lg" type="submit">
-                                <i class="fas fa-sign-in-alt me-2"></i>{% trans "Sign In" %}
+
+                        <div class="d-grid">
+                            <button class="btn btn-primary btn-lg fw-bold" type="submit">
+                                <i class="fas fa-sign-in-alt me-2"></i>Entrar
                             </button>
                         </div>
+
+                        <hr class="my-4">
+
+                        <div class="text-center">
+                            <p class="small">Ainda não tem uma conta? <a href="{% url 'account_signup' %}"><strong>Inscreva-se</strong></a></p>
+                        </div>
                     </form>
-                </div>
-                <div class="card-footer text-center py-3">
-                    <div class="small">
-                        <a href="{% url 'account_signup' %}">{% trans "Don't have an account?" %} <strong>{% trans "Sign up!" %}</strong></a>
-                    </div>
                 </div>
             </div>
         </div>

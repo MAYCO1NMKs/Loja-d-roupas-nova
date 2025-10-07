@@ -1,0 +1,100 @@
+/* ====================================================================
+   ESTILOS GLOBAIS DO CARRINHO (FORÇA FUNDO BRANCO E TEXTO PRETO)
+   ==================================================================== */
+body {
+    background-color: #f4f5f7 !important; /* Força um fundo cinza claro para a página */
+}
+
+.container.my-5 {
+    background-color: transparent !important; /* Garante que o container principal não tenha cor de fundo */
+}
+
+/* Força todo o texto dentro do container do carrinho a ser escuro */
+.container.my-5 h1, .container.my-5 h5, .container.my-s5 p, .container.my-5 span {
+    color: #1a202c !important;
+}
+
+/* ====================================================================
+   PÁGINA DE CARRINHO VAZIO
+   ==================================================================== */
+.bg-light {
+    background-color: #ffffff !important; /* Fundo branco para o card de carrinho vazio */
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+.bi-bag-x-fill {
+    color: #cbd5e0 !important;
+}
+
+.text-secondary {
+    color: #718096 !important;
+}
+
+/* ====================================================================
+   CARTÃO DE ITEM E RESUMO DO PEDIDO (DESIGN MODERNO)
+   ==================================================================== */
+.cart-item.card, .summary-card.card {
+    border: 1px solid #e2e8f0; /* Borda sutil */
+    border-radius: 8px; /* Cantos arredondados */
+    background-color: #ffffff !important; /* Fundo branco */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+.cart-item .card-body, .summary-card .card-body {
+    padding: 1.75rem;
+}
+
+/* Títulos dos cards */
+.summary-card .card-title, .cart-item h5 {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: #1a202c !important;
+}
+
+.cart-item .text-muted.small {
+     color: #718096 !important;
+}
+
+.cart-item .fw-bold {
+    font-size: 1.1rem;
+    color: #1a202c !important;
+}
+
+/* Botão de Remover */
+.btn-danger-soft {
+    background-color: transparent;
+    color: #a0aec0 !important; /* Cinza sutil */
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.25rem 0.5rem;
+    border: none;
+}
+
+.btn-danger-soft:hover {
+    background-color: #fef2f2;
+    color: #e53e3e !important; /* Vermelho ao passar o mouse */
+}
+
+/* ====================================================================
+   RESUMO DO PEDIDO
+   ==================================================================== */
+.summary-card .list-group-item {
+    padding: 1rem 0;
+    border-bottom: 1px solid #f1f1f1;
+    background-color: transparent !important;
+}
+
+.summary-card .list-group-item:last-child {
+    border-bottom: none;
+}
+
+.summary-card .text-success {
+    color: #38a169 !important;
+    font-weight: 600;
+}
+
+/* ====================================================================
+   ÍCONES DO BOOTSTRAP
+   ==================================================================== */
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css");

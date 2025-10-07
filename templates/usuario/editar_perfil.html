@@ -1,52 +1,102 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Editar Perfil - StyleMen{% endblock %}
+{% block title %}Editar Perfil{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/perfil.css' %}">
+{% endblock %}
 
 {% block content %}
 <div class="container mt-5 mb-5">
-    <div class="card p-4 shadow-sm">
-        <h2 class="mb-4">Editar Perfil</h2>
-        
+    <div class="profile-card p-4 p-md-5">
+        <h2 class="text-center mb-5" style="color: black !important; font-weight: bold !important;">Editar Perfil</h2>
+
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
 
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            <!-- SEÇÃO DA FOTO DE PERFIL -->
+            <div class="text-center mb-5">
+                {% if form.instance.foto_perfil and form.instance.foto_perfil.url %}
+                    <img src="{{ form.instance.foto_perfil.url }}" alt="Foto de Perfil" class="profile-avatar mb-3">
+                {% else %}
+                    <i class="fas fa-user-circle profile-avatar-icon text-secondary mb-3"></i>
+                {% endif %}
+                <div>
+                    <label for="{{ form.foto_perfil.id_for_label }}" class="form-label fw-bold" style="color: black !important; font-weight: bold !important;">Alterar Foto de Perfil</label>
+                    {{ form.foto_perfil }}
+                    {% for error in form.foto_perfil.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+                </div>
+            </div>
+
             <div class="row">
-                <div class="col-md-12 text-center mb-4">
-                    {% if form.foto_perfil.value %}
-                        <img src="/media/{{ form.foto_perfil.value }}" alt="Foto de Perfil" class="rounded-circle" width="150" height="150" style="object-fit: cover;">
-                    {% endif %}
-                    <div class="mt-2">
-                        {{ form.foto_perfil.label_tag }}
-                        {{ form.foto_perfil }}
+                <!-- COLUNA DA ESQUERDA: INFORMAÇÕES PESSOAIS -->
+                <div class="col-lg-6 border-end pe-lg-5">
+                    <h4 class="mb-4" style="color: black !important; font-weight: bold !important;">Informações Pessoais</h4>
+                    <div class="mb-3">
+                        <label for="{{ form.first_name.id_for_label }}" class="form-label" style="color: black !important; font-weight: bold !important;">Nome</label>
+                        {{ form.first_name }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.last_name.id_for_label }}" class="form-label" style="color: black !important; font-weight: bold !important;">Sobrenome</label>
+                        {{ form.last_name }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.email.id_for_label }}" class="form-label" style="color: black !important; font-weight: bold !important;">E-mail</label>
+                        {{ form.email }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.telefone.id_for_label }}" class="form-label" style="color: black !important; font-weight: bold !important;">Telefone</label>
+                        {{ form.telefone }}
+                    </div>
+                </div>
+
+                <!-- COLUNA DA DIREITA: ENDEREÇO -->
+                <div class="col-lg-6 ps-lg-5">
+                    <h4 class="mb-4" style="color: black !important; font-weight: bold !important;">Endereço</h4>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.cep.id_for_label }}" class="form-label" style="color: black !important; font-weight: bold !important;">CEP</label>
+                            {{ form.cep }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.numero.id_for_label }}" class="form-label" style="color: black !important; font-weight: bold !important;">Número</label>
+                            {{ form.numero }}
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.endereco.id_for_label }}" class="form-label" style="color: black !important; font-weight: bold !important;">Endereço</label>
+                        {{ form.endereco }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.complemento.id_for_label }}" class="form-label" style="color: black !important; font-weight: bold !important;">Complemento</label>
+                        {{ form.complemento }}
+                    </div>
+                    <div class="row">
+                        <div class="col-md-7 mb-3">
+                             <label for="{{ form.bairro.id_for_label }}" class="form-label" style="color: black !important; font-weight: bold !important;">Bairro</label>
+                             {{ form.bairro }}
+                        </div>
+                        <div class="col-md-5 mb-3">
+                            <label for="{{ form.estado.id_for_label }}" class="form-label" style="color: black !important; font-weight: bold !important;">Estado</label>
+                            {{ form.estado }}
+                        </div>
+                    </div>
+                     <div class="mb-3">
+                        <label for="{{ form.cidade.id_for_label }}" class="form-label" style="color: black !important; font-weight: bold !important;">Cidade</label>
+                        {{ form.cidade }}
                     </div>
                 </div>
             </div>
 
-            <hr>
-            <h4 class="mt-4 mb-3">Informações Pessoais</h4>
-            <div class="row">
-                <div class="col-md-6 mb-3">{{ form.first_name.label_tag }}{{ form.first_name }}</div>
-                <div class="col-md-6 mb-3">{{ form.last_name.label_tag }}{{ form.last_name }}</div>
-                <div class="col-md-6 mb-3">{{ form.email.label_tag }}{{ form.email }}</div>
-                <div class="col-md-6 mb-3">{{ form.telefone.label_tag }}{{ form.telefone }}</div>
-            </div>
-
-            <hr>
-            <h4 class="mt-4 mb-3">Endereço de Entrega</h4>
-            <div class="row">
-                <div class="col-md-4 mb-3">{{ form.cep.label_tag }}{{ form.cep }}</div>
-                <div class="col-md-8 mb-3">{{ form.endereco.label_tag }}{{ form.endereco }}</div>
-                <div class="col-md-4 mb-3">{{ form.numero.label_tag }}{{ form.numero }}</div>
-                <div class="col-md-8 mb-3">{{ form.complemento.label_tag }}{{ form.complemento }}</div>
-                <div class="col-md-5 mb-3">{{ form.bairro.label_tag }}{{ form.bairro }}</div>
-                <div class="col-md-5 mb-3">{{ form.cidade.label_tag }}{{ form.cidade }}</div>
-                <div class="col-md-2 mb-3">{{ form.estado.label_tag }}{{ form.estado }}</div>
-            </div>
-
-            <div class="mt-4">
-                <button type="submit" class="btn btn-primary btn-lg">Salvar Alterações</button>
-                <a href="{% url 'usuario:profile_view' %}" class="btn btn-secondary btn-lg">Cancelar</a>
+            <!-- BOTÕES DE AÇÃO -->
+            <div class="mt-5 text-center">
+                <button type="submit" class="btn btn-primary btn-lg px-5 me-2">Salvar Alterações</button>
+                <a href="{% url 'usuario:perfil' %}" class="btn btn-secondary btn-lg px-4">Cancelar</a>
             </div>
         </form>
     </div>

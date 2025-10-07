@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans "Verificação de E-mail" %}{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/account.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+      .card {
+        border-radius: 1rem;
+      }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7">
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-4 p-md-5">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-envelope-open-text fa-4x text-primary"></i>
+                        <h2 class="card-title mt-3 fw-bold">{% trans "Verifique seu E-mail" %}</h2>
+                    </div>
+
+                    <p class="text-center text-muted px-3">
+                        {% blocktrans %}Enviamos um e-mail para você para verificação. Por favor, clique no link dentro desse e-mail. Se você não encontrar o e-mail de verificação em sua caixa de entrada principal, verifique sua pasta de spam. Caso contrário, entre em contato conosco se não o receber dentro de alguns minutos.{% endblocktrans %}
+                    </p>
+
+                    {% url 'account_email' as email_url %}
+
+                    <p class="text-center small mt-4">
+                        {% blocktrans %}<strong>Nota:</strong> você ainda pode <a href="{{ email_url }}">alterar seu endereço de e-mail</a>.{% endblocktrans %}
+                    </p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

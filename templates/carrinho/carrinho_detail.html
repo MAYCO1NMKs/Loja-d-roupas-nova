@@ -1,77 +1,89 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}Meu Carrinho de Compras{% endblock %}
+{% block title %}Meu Carrinho{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/carrinho.css' %}">
+{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1 class="my-4">Meu Carrinho</h1>
+<div class="container my-5">
 
-    {% if carrinho %}
-    <div class="row">
-        <!-- Itens do Carrinho -->
-        <div class="col-lg-8">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead class="table-dark">
-                        <tr>
-                            <th scope="col" colspan="2">Produto</th>
-                            <th scope="col">Quantidade</th>
-                            <th scope="col" class="text-end">Preço Unitário</th>
-                            <th scope="col" class="text-end">Preço Total</th>
-                            <th scope="col"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in carrinho %}
-                        <tr>
-                            <td style="width: 100px;">
-                                <img src="{% if item.produto.imagem %}{{ item.produto.imagem.url }}{% else %}https://via.placeholder.com/100x100{% endif %}" class="img-fluid rounded" alt="{{ item.produto.nome }}">
-                            </td>
-                            <td>
-                                <a href="/produtos/{{ item.produto.id }}/" class="text-dark text-decoration-none">{{ item.produto.nome }}</a>
-                            </td>
-                            <td>{{ item.quantidade }}</td>
-                            <td class="text-end">R$ {{ item.preco|floatformat:2 }}</td>
-                            <td class="text-end">R$ {{ item.total_preco|floatformat:2 }}</td>
-                            <td class="text-center">
-                                <a href="/carrinho/remover/{{ item.produto.id }}/" class="btn btn-sm btn-outline-danger">X</a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+    {% if not carrinho %}
+        <!-- ======================= CARRINHO VAZIO ======================= -->
+        <div class="text-center p-5 rounded-3 bg-light">
+            <i class="bi bi-bag-x-fill display-1 text-muted"></i>
+            <h1 class="mt-4">Seu carrinho está vazio</h1>
+            <p class="lead text-secondary">Adicione produtos da nossa coleção para vê-los aqui.</p>
+            <a href="/produtos" class="btn btn-primary btn-lg mt-3">
+                <i class="bi bi-box-seam-fill me-2"></i>Ver Produtos
+            </a>
         </div>
 
-        <!-- Resumo do Pedido -->
-        <div class="col-lg-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Resumo do Pedido</h5>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Subtotal
-                            <span>R$ {{ carrinho.get_total_price|floatformat:2 }}</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center fw-bold">
-                            Total
-                            <span>R$ {{ carrinho.get_total_price|floatformat:2 }}</span>
-                        </li>
-                    </ul>
-                    <div class="d-grid gap-2 mt-3">
-                        <a href="#" class="btn btn-primary">Finalizar Compra</a>
-                        <a href="/produtos" class="btn btn-outline-secondary">Continuar Comprando</a>
+    {% else %}
+        <!-- ======================= CARRINHO COM PRODUTOS ======================= -->
+        <h1 class="mb-4">Meu Carrinho</h1>
+        <div class="row">
+            <!-- COLUNA DA ESQUERDA: ITENS DO CARRINHO -->
+            <div class="col-lg-8">
+                {% for item in carrinho %}
+                    <div class="cart-item card mb-3 shadow-sm">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <!-- Imagem do Produto -->
+                                <div class="col-md-2 col-4">
+                                    <img src="{% if item.produto.imagem %}{{ item.produto.imagem.url }}{% else %}https://via.placeholder.com/150{% endif %}" alt="{{ item.produto.nome }}" class="img-fluid rounded">
+                                </div>
+                                <!-- Nome do Produto e Detalhes -->
+                                <div class="col-md-4 col-8">
+                                    <h5 class="mb-1">{{ item.produto.nome }}</h5>
+                                    <p class="text-muted small">Preço: R$ {{ item.preco|floatformat:2 }}</p>
+                                </div>
+                                <!-- Quantidade -->
+                                <div class="col-md-3 col-6 mt-2 mt-md-0">
+                                    <form action="{% url 'carrinho:atualizar_carrinho' item.produto.id %}" method="post" class="d-flex">
+                                        {% csrf_token %}
+                                        <input type="number" name="quantidade" value="{{ item.quantidade }}" min="1" class="form-control form-control-sm text-center quantity-input">
+                                        <button type="submit" class="btn btn-sm btn-outline-primary ms-2">Atualizar</button>
+                                    </form>
+                                </div>
+                                <!-- Preço Total do Item e Botão de Remover -->
+                                <div class="col-md-3 col-6 mt-2 mt-md-0 text-md-end">
+                                    <p class="mb-1 fw-bold">R$ {{ item.total_preco|floatformat:2 }}</p>
+                                    <a href="{% url 'carrinho:remover_do_carrinho' item.produto.id %}" class="btn btn-sm btn-danger-soft">
+                                        <i class="bi bi-trash-fill"></i> Remover
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- COLUNA DA DIREITA: RESUMO DO PEDIDO -->
+            <div class="col-lg-4">
+                <div class="summary-card card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Resumo do Pedido</h5>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>Subtotal</span>
+                                <span>R$ {{ carrinho.get_total_price|floatformat:2 }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between fw-bold fs-5">
+                                <span>Total</span>
+                                <span>R$ {{ carrinho.get_total_price|floatformat:2 }}</span>
+                            </li>
+                        </ul>
+                        <div class="d-grid gap-2 mt-4">
+                            <a href="{% url 'pedidos:checkout' %}" class="btn btn-primary btn-lg">Finalizar Compra</a>
+                            <a href="/produtos" class="btn btn-outline-secondary">Continuar Comprando</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    {% else %}
-    <div class="text-center p-5">
-        <h2>Seu carrinho está vazio.</h2>
-        <p class="lead">Que tal adicionar alguns produtos?</p>
-        <a href="/produtos" class="btn btn-primary btn-lg">Ver Produtos</a>
-    </div>
     {% endif %}
 </div>
 {% endblock %}

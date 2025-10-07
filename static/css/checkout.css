@@ -1,0 +1,105 @@
+/* ====================================================================
+   ESTILOS GLOBAIS DA PÁGINA DE CHECKOUT
+   ==================================================================== */
+body {
+    background-color: #f4f5f7 !important; 
+}
+
+.checkout-header h1 {
+    font-weight: 700;
+    color: #1a202c !important;
+}
+
+.checkout-header .lead {
+    color: #718096 !important;
+}
+
+/* ====================================================================
+   CARDS DE CONTEÚDO (FORMULÁRIOS E RESUMO)
+   ==================================================================== */
+.checkout-card.card, .summary-card.card {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background-color: #ffffff !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+.checkout-card .card-body, .summary-card .card-body {
+    padding: 1.75rem;
+}
+
+.checkout-card .card-title, .summary-card .card-title {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: #1a202c !important;
+    border-bottom: 1px solid #f1f1f1;
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem !important;
+}
+
+/* ====================================================================
+   FORMULÁRIOS
+   ==================================================================== */
+.form-label {
+    font-weight: 600;
+    color: #4a5568 !important;
+    margin-bottom: 0.5rem;
+}
+
+.form-control {
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    border: 1px solid #cbd5e0;
+}
+
+.form-control:focus {
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+}
+
+/* ====================================================================
+   RESUMO DO PEDIDO
+   ==================================================================== */
+.summary-item-img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+}
+
+.summary-items .list-group-item {
+    padding: 1rem 0;
+    border: none;
+    background: transparent !important;
+}
+
+.summary-items h6 {
+    font-weight: 600;
+    color: #2d3748 !important;
+}
+
+.total-summary .list-group-item {
+    padding: 0.75rem 0;
+    border: none;
+    background: transparent !important;
+}
+
+.total-summary span {
+    color: #4a5568 !important;
+}
+
+.total-summary .fw-bold span {
+    color: #1a202c !important;
+}
+
+.text-success {
+    color: #38a169 !important;
+    font-weight: 600;
+}
+
+/* Botão Principal */
+.btn-primary {
+    padding: 0.8rem 1.5rem;
+    font-weight: 600;
+}

@@ -162,6 +162,8 @@ SITE_ID = 1
 
 ACCOUNT_ADAPTER = "usuario.adapters.MyAccountAdapter"
 ACCOUNT_SIGNUP_REDIRECT_URL = "/accounts/login/"
+ACCOUNT_LOGOUT_ON_GET = True
+
 
 # --- REST Framework Configuration ---
 
@@ -173,17 +175,8 @@ REST_FRAMEWORK = {
 
 # --- Allauth Settings ---
 
-# The user can log in with a username or email.
 ACCOUNT_AUTHENTICATION_METHOD = "username_email"
-
-# Email is not required for registration.
-ACCOUNT_EMAIL_REQUIRED = False
-
-# Email verification is disabled for development.
-ACCOUNT_EMAIL_VERIFICATION = "none"
-
-# Allows the user to stay logged in (optional).
-ACCOUNT_SESSION_REMEMBER = True
-
-# The username is required for registration.
+ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = "none"
+ACCOUNT_SESSION_REMEMBER = True

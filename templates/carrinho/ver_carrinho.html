@@ -1,83 +1,95 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Meu Carrinho - D Roupas-Nova{% endblock %}
+{% block title %}Meu Carrinho{% endblock %}
 
 {% block extra_head %}
-<link rel="stylesheet" href="{% static 'css/carrinho.css' %}">
+    <!-- Aponte para o CSS que já criamos -->
+    <link rel="stylesheet" href="{% static 'css/carrinho.css' %}">
+    <!-- Importa os ícones do Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
 {% endblock %}
 
 {% block content %}
-<div class="page-header">
-  <h1>Meu Carrinho</h1>
-</div>
+<div class="container my-5">
 
-{% if carrinho.itens.all %}
-  <div class="cart-layout">
-    
-    <!-- Coluna da Esquerda: Itens do Carrinho -->
-    <div class="cart-items">
-      {% for item in carrinho.itens.all %}
-        {% with produto=item.variacao.produto %}
-        <div class="cart-item">
-          <div class="cart-item-image">
-            <a href="{{ produto.get_absolute_url }}">
-              {% if produto.imagem %}
-                <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}">
-              {% else %}
-                <img src="https://via.placeholder.com/100x100.png/1E1E1E/B3B3B3?text=ShopModerno" alt="Imagem Padrão">
-              {% endif %}
+    {% if not carrinho.itens.all %}
+        <!-- ======================= CARRINHO VAZIO (DESIGN MODERNO) ======================= -->
+        <div class="text-center p-5 rounded-3 bg-light">
+            <i class="bi bi-bag-x-fill display-1 text-muted"></i>
+            <h1 class="mt-4">Seu carrinho está vazio</h1>
+            <p class="lead text-secondary">Adicione produtos da nossa coleção para vê-los aqui.</p>
+            <a href="{% url 'produtos:lista_colecoes' %}" class="btn btn-primary btn-lg mt-3">
+                <i class="bi bi-box-seam-fill me-2"></i>Ver Produtos
             </a>
-          </div>
-          <div class="cart-item-details">
-            <a href="{{ produto.get_absolute_url }}"><h4>{{ produto.nome }} ({{ item.variacao.tamanho }})</h4></a>
-            <p class="price">R$ {{ item.preco|floatformat:2 }}</p>
-
-            <!-- Formulário de atualização de quantidade com o campo override -->
-            <form action="{% url 'carrinho:adicionar_ao_carrinho' produto.id %}" method="post" class="form-update-quantity">
-                {% csrf_token %}
-                <input type="hidden" name="variacao_id" value="{{ item.variacao.id }}">
-                <input type="hidden" name="override" value="True">
-                <input type="number" name="quantidade" value="{{ item.quantidade }}" min="1" class="input-quantity">
-                <button type="submit" class="btn btn-secondary btn-sm">Atualizar</button>
-            </form>
-          </div>
-          <div class="cart-item-total">
-            <p>R$ {{ item.get_total_price|floatformat:2 }}</p>
-          </div>
-          <div class="cart-item-actions">
-            <a href="{% url 'carrinho:remover_do_carrinho' item.id %}" class="btn btn-danger btn-sm">Remover</a>
-          </div>
         </div>
-        {% endwith %}
-      {% endfor %}
-    </div>
 
-    <!-- Coluna da Direita: Resumo do Pedido -->
-    <div class="cart-summary">
-      <h3>Resumo do Pedido</h3>
-      <div class="summary-row">
-        <span>Subtotal</span>
-        <span>R$ {{ carrinho.get_total_price|floatformat:2 }}</span>
-      </div>
-      <div class="summary-row">
-        <span>Frete</span>
-        <span>Grátis</span>
-      </div>
-      <div class="summary-total">
-        <span>Total</span>
-        <span>R$ {{ carrinho.get_total_price|floatformat:2 }}</span>
-      </div>
-      <a href="{% url 'pedidos:checkout' %}" class="btn btn-primary btn-block">Finalizar Compra</a>
-    </div>
+    {% else %}
+        <!-- ======================= CARRINHO COM PRODUTOS (DESIGN MODERNO) ======================= -->
+        <h1 class="mb-4">Meu Carrinho</h1>
+        <div class="row gx-5">
+            
+            <!-- COLUNA DA ESQUERDA: ITENS DO CARRINHO -->
+            <div class="col-lg-8">
+                {% for item in carrinho.itens.all %}
+                {% with produto=item.variacao.produto %}
+                    <div class="cart-item card mb-3 shadow-sm">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <!-- Imagem -->
+                                <div class="col-md-2 col-3">
+                                    <img src="{% if produto.imagem %}{{ produto.imagem.url }}{% else %}https://via.placeholder.com/150{% endif %}" alt="{{ produto.nome }}" class="img-fluid rounded">
+                                </div>
+                                <!-- Nome e Tamanho -->
+                                <div class="col-md-4 col-5">
+                                    <h5 class="mb-1">{{ produto.nome }}</h5>
+                                    <p class="text-muted small">Tamanho: {{ item.variacao.tamanho }}</p>
+                                </div>
+                                <!-- Quantidade -->
+                                <div class="col-md-3 col-4">
+                                     <p class="mb-1">Qtd: {{ item.quantidade }}</p>
+                                </div>
+                                <!-- Preço Total e Remover -->
+                                <div class="col-md-3 text-md-end">
+                                    <p class="mb-1 fw-bold">R$ {{ item.get_total_price|floatformat:2 }}</p>
+                                    <a href="{% url 'carrinho:remover_do_carrinho' item.id %}" class="btn btn-danger-soft btn-sm">
+                                        <i class="bi bi-trash-fill"></i> Remover
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endwith %}
+                {% endfor %}
+            </div>
 
-  </div>
-{% else %}
-  <div class="empty-cart-message">
-    <h3>Seu carrinho está vazio.</h3>
-    <p>Adicione produtos da nossa coleção para vê-los aqui.</p>
-    <a href="{% url 'produtos:lista_colecoes' %}" class="btn">Ver Produtos</a>
-  </div>
-{% endif %}
-
+            <!-- COLUNA DA DIREITA: RESUMO DO PEDIDO -->
+            <div class="col-lg-4">
+                <div class="summary-card card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Resumo do Pedido</h5>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>Subtotal</span>
+                                <span>R$ {{ carrinho.get_total_price|floatformat:2 }}</span>
+                            </li>
+                             <li class="list-group-item d-flex justify-content-between">
+                                <span>Frete</span>
+                                <span class="text-success">Grátis</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between fw-bold fs-5 mt-2">
+                                <span>Total</span>
+                                <span>R$ {{ carrinho.get_total_price|floatformat:2 }}</span>
+                            </li>
+                        </ul>
+                        <div class="d-grid gap-2 mt-4">
+                            <a href="{% url 'pedidos:checkout' %}" class="btn btn-primary btn-lg">Finalizar Compra</a>
+                            <a href="{% url 'produtos:lista_colecoes' %}" class="btn btn-outline-secondary">Continuar Comprando</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

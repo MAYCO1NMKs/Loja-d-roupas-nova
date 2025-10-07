@@ -2,11 +2,10 @@
   # Usa o canal estável do Nix
   channel = "stable-24.05";
 
-  # Instala o Python, o pip e o Django usando o Nix
+  # Instala o Python e o pip. As dependências do Python serão geridas pelo pip.
   packages = [
-    pkgs.python3,
-    pkgs.pip,
-    pkgs.django  # Adicionado para garantir que o Django esteja disponível
+    pkgs.python3
+    pkgs.python3Packages.pip
   ];
 
   # Variáveis de ambiente para o Django
@@ -23,13 +22,13 @@
       "ms-python.python"
     ];
     workspace = {
-      # Roda apenas uma vez quando o workspace é criado.
+      # Roda apenas uma vez quando o workspace é criado para instalar as dependências.
       onCreate = {
-        setup = "python -m venv venv && venv/bin/pip install -r requirements.txt";
+        install-deps = "pip install -r requirements.txt";
       };
       onStart = {
         # Roda as migrações quando o workspace inicia
-        migrate = "venv/bin/python manage.py migrate";
+        run-migrations = "python manage.py migrate";
       };
     };
 
@@ -38,7 +37,7 @@
       enable = true;
       previews = {
         web = {
-          command = ["venv/bin/python" "manage.py" "runserver" "0.0.0.0:8000"];
+          command = ["python" "manage.py" "runserver" "0.0.0.0:$PORT"];
           manager = "web";
         };
       };

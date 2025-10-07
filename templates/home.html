@@ -5,69 +5,67 @@
 
 {% block extra_head %}
     <link rel="stylesheet" href="{% static 'css/home.css' %}">
-    <link rel="stylesheet" href="{% static 'css/featured_products.css' %}">
+    <link rel="stylesheet" href="{% static 'css/colecoes.css' %}"> <!-- Reutilizando o CSS da coleção -->
 {% endblock %}
 
 {% block content %}
 <!-- Seção Hero com Imagem de Banner -->
-<section class="hero-section">
+<section class="hero">
     <div class="hero-content">
         <h1>Estilo que Define Você</h1>
-        <p>Encontre peças exclusivas que marcam presença e definem seu estilo. Qualidade e design em cada detalhe.</p>
-        <a href="{% url 'produtos:lista_colecoes' %}" class="btn btn-light btn-lg">Explorar Coleção</a>
+        <p>Encontre peças exclusivas que marcam presença.</p>
+        <a href="{% url 'produtos:lista_colecoes' %}" class="btn btn-collection">Explorar Coleção</a>
     </div>
 </section>
 
 <!-- Seção de Produtos em Destaque -->
-<div class="page-header">
-    <h2>Produtos em Destaque</h2>
-    <p>Uma seleção especial das peças mais desejadas da estação.</p>
-</div>
-
-<div class="featured-product-grid">
-    {% for produto in produtos %}
-        <div class="product-card-featured">
-            <a href="{% url 'produtos:detalhe_produto' id=produto.id slug=produto.slug %}">
-                <div class="product-image-container">
-                    {% if produto.imagem %}
-                        <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" class="product-image">
-                    {% else %}
-                        <img src="https://via.placeholder.com/400x550.png/001f3f/FFFFFF?text=StyleMen" alt="Imagem Padrão" class="product-image">
-                    {% endif %}
+<section class="featured-products-section">
+    <div class="container">
+        <h2>Produtos em Destaque</h2>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+            {% for produto in produtos %}
+                <div class="col">
+                    <div class="product-card h-100">
+                        <a href="{% url 'produtos:detalhe_produto' produto.id produto.slug %}" class="product-image-link">
+                            {% if produto.imagem %}
+                                <img src="{{ produto.imagem.url }}" class="card-img-top" alt="{{ produto.nome }}">
+                            {% else %}
+                                <img src="https://via.placeholder.com/400x550.png/f1f1f1/333?text=D+Roupas" class="card-img-top" alt="Imagem Padrão">
+                            {% endif %}
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ produto.nome }}</h5>
+                            <p class="card-text price">R$ {{ produto.preco|floatformat:2 }}</p>
+                        </div>
+                        <div class="product-form-action">
+                            <form action="{% url 'carrinho:adicionar_ao_carrinho' produto.id %}" method="post">
+                                {% csrf_token %}
+                                <div class="mb-2">
+                                    <select name="variacao_id" class="form-select form-select-sm" required>
+                                        <option value="" selected disabled>Selecione o Tamanho</option>
+                                        {% for variacao in produto.variacoes.all %}
+                                            {% if variacao.estoque > 0 %}
+                                                <option value="{{ variacao.id }}">{{ variacao.get_tamanho_display }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary btn-sm">Adicionar ao Carrinho</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-            </a>
-            <div class="product-info">
-                <a href="{% url 'produtos:detalhe_produto' id=produto.id slug=produto.slug %}" style="text-decoration: none; color: inherit;">
-                    <h3 class="product-title">{{ produto.nome }}</h3>
-                </a>
-                <p class="product-price">R$ {{ produto.preco|floatformat:2 }}</p>
-                
-                <!-- Formulário para adicionar ao carrinho com a ação corrigida -->
-                <form action="{% url 'carrinho:adicionar_ao_carrinho' produto.id %}" method="post" class="cart-form">
-                    {% csrf_token %}
-                    <div class="size-selector">
-                        <label for="variacao-{{ produto.id }}">Tamanho:</label>
-                        <select name="variacao_id" id="variacao-{{ produto.id }}" class="form-control">
-                            {% for variacao in produto.variacoes.all %}
-                                {% if variacao.estoque > 0 %}
-                                    <option value="{{ variacao.id }}">{{ variacao.tamanho }}</option>
-                                {% endif %}
-                            {% endfor %}
-                        </select>
+            {% empty %}
+                <div class="col-12">
+                    <div class="alert alert-info text-center">
+                        Nenhuma peça em destaque no momento. Volte em breve!
                     </div>
-                    <div class="product-actions">
-                        <button type="submit" class="btn btn-primary">Adicionar ao Carrinho</button>
-                        <a href="{% url 'produtos:detalhe_produto' id=produto.id slug=produto.slug %}" class="btn btn-secondary">Ver Detalhes</a>
-                    </div>
-                </form>
-            </div>
+                </div>
+            {% endfor %}
         </div>
-    {% empty %}
-        <div class="no-products-message">
-            <h3>Nenhuma peça em destaque no momento.</h3>
-            <p>Nossos curadores de estilo estão trabalhando para trazer o melhor para você. Volte em breve!</p>
-        </div>
-    {% endfor %}
-</div>
+    </div>
+</section>
 
 {% endblock %}

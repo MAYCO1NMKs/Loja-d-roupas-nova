@@ -1,75 +1,65 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Coleções - D Roupas-Nova{% endblock %}
+{% block title %}Nossas Coleções{% endblock %}
 
 {% block extra_head %}
-<link rel="stylesheet" href="{% static 'css/home.css' %}">
-{# Adicionando o CSS do formulário do produto em destaque #}
-<link rel="stylesheet" href="{% static 'css/featured_products.css' %}">
+    <!-- CSS dedicado para a página de coleções -->
+    <link rel="stylesheet" href="{% static 'css/colecoes.css' %}">
 {% endblock %}
 
 {% block content %}
-<!-- Seção Hero com Imagem de Banner -->
-<section class="hero-section">
-  <div class="hero-content">
-    <h1>Nossas Coleções</h1>
-    <p>Uma seleção completa das peças mais estilosas e desejadas. Looks que definem tendências para todas as ocasiões.</p>
-  </div>
-</section>
+<div class="container my-5">
+    <!-- Cabeçalho da Página -->
+    <div class="collection-header text-center mb-5">
+        <h1 class="display-4">Nossas Coleções</h1>
+        <p class="lead text-muted">Qualidade e design que você percebe no primeiro toque.</p>
+    </div>
 
-<!-- Seção de Produtos -->
-<div class="page-header">
-  <h2>Todas as Peças</h2>
-  <p>Qualidade e design que você percebe no primeiro toque.</p>
+    <!-- Grid de Produtos -->
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        {% for produto in produtos %}
+        <div class="col">
+            <div class="product-card h-100">
+                <a href="{% url 'produtos:detalhe_produto' produto.id produto.slug %}" class="product-image-link">
+                    {% if produto.imagem %}
+                        <img src="{{ produto.imagem.url }}" class="card-img-top" alt="{{ produto.nome }}">
+                    {% else %}
+                        <img src="https://via.placeholder.com/400x550.png/f1f1f1/333?text=D+Roupas" class="card-img-top" alt="Imagem Padrão">
+                    {% endif %}
+                </a>
+                <div class="card-body">
+                    <h5 class="card-title">{{ produto.nome }}</h5>
+                    <p class="card-text price">R$ {{ produto.preco|floatformat:2 }}</p>
+                </div>
+                <!-- Formulário de Ação que aparece no hover -->
+                <div class="product-form-action">
+                    <form action="{% url 'carrinho:adicionar_ao_carrinho' produto.id %}" method="post">
+                        {% csrf_token %}
+                        <div class="mb-2">
+                            <select name="variacao_id" class="form-select form-select-sm" required>
+                                <option value="" selected disabled>Selecione o Tamanho</option>
+                                {% for variacao in produto.variacoes.all %}
+                                    {% if variacao.estoque > 0 %}
+                                        <option value="{{ variacao.id }}">{{ variacao.get_tamanho_display }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-sm">Adicionar ao Carrinho</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info text-center">
+                    Nenhuma peça disponível no momento. Volte em breve!
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 </div>
-
-{# Usando a mesma classe de grid da página inicial para consistência #}
-<div class="featured-product-grid">
-  {% for produto in produtos %}
-  {# Usando o card de produto da página inicial que já tem o formulário #}
-  <div class="product-card-featured">
-      <a href="{% url 'produtos:detalhe_produto' id=produto.id slug=produto.slug %}">
-          <div class="product-image-container">
-              {% if produto.imagem %}
-                  <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" class="product-image">
-              {% else %}
-                  <img src="https://via.placeholder.com/400x550.png/001f3f/FFFFFF?text=StyleMen" alt="Imagem Padrão" class="product-image">
-              {% endif %}
-          </div>
-      </a>
-      <div class="product-info">
-          <a href="{% url 'produtos:detalhe_produto' id=produto.id slug=produto.slug %}" style="text-decoration: none; color: inherit;">
-              <h3 class="product-title">{{ produto.nome }}</h3>
-          </a>
-          <p class="product-price">R$ {{ produto.preco|floatformat:2 }}</p>
-          
-          <!-- Formulário para adicionar ao carrinho -->
-          <form action="{% url 'carrinho:adicionar_ao_carrinho' produto.id %}" method="post" class="cart-form">
-              {% csrf_token %}
-              <div class="size-selector">
-                  <label for="variacao-{{ produto.id }}">Tamanho:</label>
-                  <select name="variacao_id" id="variacao-{{ produto.id }}" class="form-control">
-                      {% for variacao in produto.variacoes.all %}
-                          {% if variacao.estoque > 0 %}
-                              <option value="{{ variacao.id }}">{{ variacao.tamanho }}</option>
-                          {% endif %}
-                      {% endfor %}
-                  </select>
-              </div>
-              <div class="product-actions">
-                  <button type="submit" class="btn btn-primary">Adicionar ao Carrinho</button>
-                  <a href="{% url 'produtos:detalhe_produto' id=produto.id slug=produto.slug %}" class="btn btn-secondary">Ver Detalhes</a>
-              </div>
-          </form>
-      </div>
-  </div>
-  {% empty %}
-  <div class="no-products-message">
-      <h3>Nenhuma peça disponível no momento.</h3>
-      <p>Nossos curadores de estilo estão trabalhando para trazer o melhor para você. Volte em breve!</p>
-  </div>
-  {% endfor %}
-</div>
-
 {% endblock %}
